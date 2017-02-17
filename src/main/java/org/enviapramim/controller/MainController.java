@@ -1,16 +1,16 @@
 package org.enviapramim.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.enviapramim.model.RegisterData;
+import org.enviapramim.model.Product;
+import org.enviapramim.repository.StorageRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * Created by glauco on 16/02/17.
@@ -19,28 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity register(@RequestBody RegisterData form) {
-        String a = form.toString();
-        System.out.println("*********");
-        System.out.println(a);
-        System.out.println("************");
-        ObjectMapper mapper = new ObjectMapper();
-
+    public ResponseEntity register(@RequestBody Product product) {
+        StorageRepository repository = new StorageRepository();
+        repository.storeProduct(product);
         String jsonInString = "{}";
-       /* try {
-            jsonInString = mapper.writeValueAsString(form);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }*/
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity(jsonInString, httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public void register() {
-        System.out.println("**************************");
-        System.out.println("najhbjbsjlfndjkdlsançkm");
-        System.out.println("**************************");
-    }
+    /*
+    @RequestMapping(value = "/uploadFiles", method = RequestMethod.POST)
+    public String uploadFiles(@RequestBody Product product, @RequestParam("sku") String[] sku,
+                                   @RequestParam("file") MultipartFile[] files) {
+        return "OK";
+    }*/
 }

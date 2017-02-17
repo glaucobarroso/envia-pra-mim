@@ -1,32 +1,76 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head> 
-    <title>Getting Started: Serving Web Content</title> 
+    <title>Envia pra mim</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Envia Pra Mim</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Cadastrar no Estoque</a></li>
+                <li><a href="../queryProduct">Consultar o Estoque</a></li>
+                <li><a href="#">Anunciar</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Registrar-se</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                <form id="form">
+                    SKU:<br/>
+                    <input type="text" id="sku"/>
+                    <br/>
+                    T&iacute;itulo:<br/>
+                    <input type="text" id="title"/>
+                    <br/>
+                    Descri&ccedil;&atilde;o:<br/>
+                    <input type="text" id="description">
+                    <br/>
+                    Custo:<br/>
+                    <input type="text" id="cost"/>
+                    <br/>
+                    Quantidade:<br/>
+                    <input type="text" id="quantity"/>
+                    <br/>
+                    <br/>
+                    <input type="submit" value="Cadastrar"/>
+                </form>
+            </div>
+            <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                <form id="images" method="POST" action="uploadFiles" enctype="multipart/form-data">
+                    SKU:<br/>
+                    <input type="text" id="sku"/>
+                    <br/>
+                    Imagem 1:<br/>
+                    <input type='file' name='image' value="Selecionar"/>
+                    Imagem 2:<br/>
+                    <input type='file' name='image' value="Selecionar"/>
+                    Imagem 3:<br/>
+                    <input type='file' name='image' value="Selecionar"/>
+                    Imagem 4:<br/>
+                    <input type='file' name='image' value="Selecionar"/>
+                    Imagem 5:<br/>
+                    <input type='file' name='image' value="Selecionar"/>
+                    Imagem 6:<br/>
+                    <input type='file' name='image' value="Selecionar"/><br/>
+                    <input type="submit" value="Enviar Imagens"/>
+                </form>
+            </div> -->
 
-    <form id="form">
-        SKU:<br>
-        <input type="text" id="sku">
-        <br>
-        T&iacute;itulo:<br>
-        <input type="text" id="title">
-        <br>
-        Descri&ccedil;&atilde;o:<br>
-        <input type="text" id="description">
-        <br>
-        Custo:<br>
-        <input type="text" id="cost">
-        <br>
-        Quantidade:<br>
-        <input type="text" id="quantity">
-        <br>
-        <br>
-        <input type="submit" value="Cadastrar">
-    </form>
-    <div id="feedback"></div>
+        </div>
+    </div>
+
 </body>
 <script>
 
@@ -65,17 +109,16 @@
 
         var json = new Object();
         json.sku = sku;
-        json.tittle = title;
+        json.title = title;
         json.description = description;
         json.quantity = quantity;
         json.cost = cost;
         var jsonString = JSON.stringify(json);
-        alert(jsonString);
 
         $.ajax({
             type : "POST",
             contentType : "application/json",
-            url : "register",
+            url : "../register",
             data : jsonString,
             dataType : 'json',
             timeout : 10000,
@@ -111,5 +154,8 @@
         return String(n) === str && n >= 0;
     }
 
+});
+
 </script>
+
 </html>
