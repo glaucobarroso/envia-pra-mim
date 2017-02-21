@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de produtos</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div th:include="../fragments/common::header"></div>
+    <div class="container">
+        <form action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
+            SKU:<br/>
+            <input type="text" name="sku"/>
+            <br/>
+            T&iacute;itulo:<br/>
+            <input type="text" name="title"/>
+            <br/>
+            Descri&ccedil;&atilde;o:<br/>
+            <input type="text" name="description"/>
+            <br/>
+            Custo:<br/>
+            <input type="text" name="cost"/>
+            <br/>
+            Quantidade:<br/>
+            <input type="text" name="quantity"/>
+            <br/>
+            Imagem Principal:<br/>
+            <input type="file" name="image1"/>
+            <br/>
+            Imagem 2:<br/>
+            <input type="file" name="image2"/>
+            <br/>
+            Imagem 3:<br/>
+            <input type="file" name="image3"/>
+            <br/>
+            Imagem 4:<br/>
+            <input type="file" name="image4"/>
+            <br/>
+            Imagem 5:<br/>
+            <input type="file" name="image5"/>
+            <br/>
+            Imagem 6:<br/>
+            <input type="file" name="image6"/>
+            <br/>
+            <input type="submit" value="Cadastrar"/>
+            <!-- Imagem 2:<br/>
+            <input type='file' name='image2' value="Selecionar"/>
+            <br/>-->
+        </form>
+    </div>
+
+</body>
+</html>

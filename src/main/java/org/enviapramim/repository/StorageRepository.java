@@ -22,21 +22,15 @@ public class StorageRepository {
         entityManager = emf.createDefaultEntityManager();
     }
 
-    public Product storeProduct(Product product) {
-        Product retProd = entityManager.insert(product);
-        System.out.println("**aaaaaaaaa*****************************");
-        System.out.println(product.getSku());
-        System.out.println(product.getDescription());
-        System.out.println(product.getCost());
-        System.out.println(product.getQuantity());
-        System.out.println(product.getTitle());
-        System.out.println("*****aaaaaaaaaaaa**************************");
+    public ProductStorageModel storeProduct(ProductStorageModel product) {
+        ProductStorageModel retProd = entityManager.insert(product);
         return retProd;
     }
 
-    public List<Product> queryAllProducts() {
+    public List<ProductStorageModel> queryAllProducts() {
         EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM storage");
-        QueryResponse<Product> response = entityManager.executeEntityQueryRequest(Product.class, request);
+        QueryResponse<ProductStorageModel> response = entityManager.executeEntityQueryRequest(ProductStorageModel.class, request);
         return response.getResults();
     }
+
 }
