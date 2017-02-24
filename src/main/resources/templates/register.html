@@ -1,10 +1,4 @@
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
-
-<%
-BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-%>
-
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Cadastro de produtos</title>
@@ -17,8 +11,7 @@ BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(
 
     <div th:include="../fragments/common::header"></div>
     <div class="container">
-        <!-- <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data"> -->
-        <form id="registerForm" action="<%= blobstoreService.createUploadUrl("/register") %>" method="post" enctype="multipart/form-data">
+        <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
                     SKU:<br/>
@@ -77,22 +70,4 @@ BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(
     </div>
 
 </body>
-
-<script>
-
-    $("#registerButton").click(function() {
-       alert( "Handler for .click() called." );
-        $.ajax({
-            url: '/register',
-            type: 'POST',
-            data: $("#registerForm").serialize(),
-            success: function(result) {
-                alert("result");
-            },
-            error: function(xhr, error){
-                alert("Error ao cadastrar o produto.");
-            }
-        });
-    });
-</script>
 </html>
