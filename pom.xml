@@ -28,6 +28,7 @@
     <java.version>1.8</java.version>
     <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
     <tomcat.version>7.0.59</tomcat.version>
+    <appengine.target.version>1.9.49</appengine.target.version>
   </properties>
 
   <dependencies>
@@ -57,6 +58,13 @@
       <artifactId>tomcat-juli</artifactId>
       <version>${tomcat.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>${appengine.target.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

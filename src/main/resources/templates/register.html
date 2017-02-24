@@ -1,4 +1,10 @@
-<!DOCTYPE HTML>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+
+<%
+BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+%>
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Cadastro de produtos</title>
@@ -11,7 +17,8 @@
 
     <div th:include="../fragments/common::header"></div>
     <div class="container">
-        <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
+        <!-- <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data"> -->
+        <form id="registerForm" action="<%= blobstoreService.createUploadUrl("/register") %>" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
                     SKU:<br/>
