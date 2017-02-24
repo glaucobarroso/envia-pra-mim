@@ -11,46 +11,81 @@
 
     <div th:include="../fragments/common::header"></div>
     <div class="container">
-        <form action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
-            SKU:<br/>
-            <input type="text" name="sku"/>
-            <br/>
-            T&iacute;itulo:<br/>
-            <input type="text" name="title"/>
-            <br/>
-            Descri&ccedil;&atilde;o:<br/>
-            <input type="text" name="description"/>
-            <br/>
-            Custo:<br/>
-            <input type="text" name="cost"/>
-            <br/>
-            Quantidade:<br/>
-            <input type="text" name="quantity"/>
-            <br/>
-            Imagem Principal:<br/>
-            <input type="file" name="image1"/>
-            <br/>
-            Imagem 2:<br/>
-            <input type="file" name="image2"/>
-            <br/>
-            Imagem 3:<br/>
-            <input type="file" name="image3"/>
-            <br/>
-            Imagem 4:<br/>
-            <input type="file" name="image4"/>
-            <br/>
-            Imagem 5:<br/>
-            <input type="file" name="image5"/>
-            <br/>
-            Imagem 6:<br/>
-            <input type="file" name="image6"/>
-            <br/>
-            <input type="submit" value="Cadastrar"/>
-            <!-- Imagem 2:<br/>
-            <input type='file' name='image2' value="Selecionar"/>
-            <br/>-->
+        <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                    SKU:<br/>
+                    <input type="text" name="sku"/>
+                    <br/>
+                    T&iacute;tulo:<br/>
+                    <input type="text" name="title"/>
+                    <br/>
+                    Descri&ccedil;&atilde;o:<br/>
+                    <input type="text" name="description"/>
+                    <br/>
+                    Custo:<br/>
+                    <input type="text" name="cost"/>
+                    <br/>
+                    Quantidade:<br/>
+                    <input type="text" name="quantity"/>
+                    <br/>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                    Imagem Principal:<br/>
+                    <input type="file" name="image1"/>
+                    <br/>
+                    Imagem 2:<br/>
+                    <input type="file" name="image2"/>
+                    <br/>
+                    Imagem 3:<br/>
+                    <input type="file" name="image3"/>
+                    <br/>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                    Imagem 4:<br/>
+                    <input type="file" name="image4"/>
+                    <br/>
+                    Imagem 5:<br/>
+                    <input type="file" name="image5"/>
+                    <br/>
+                    Imagem 6:<br/>
+                    <input type="file" name="image6"/>
+                    <br/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                    <br/>
+                    <input type="submit" value="Cadastrar"/>
+                </div>
+            </div>
         </form>
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                <br/>
+                <p th:text="${response}"></p>
+            </div>
+        </div>
     </div>
 
 </body>
+
+<script>
+
+    $("#registerButton").click(function() {
+       alert( "Handler for .click() called." );
+        $.ajax({
+            url: '/register',
+            type: 'POST',
+            data: $("#registerForm").serialize(),
+            success: function(result) {
+                alert("result");
+            },
+            error: function(xhr, error){
+                alert("Error ao cadastrar o produto.");
+            }
+        });
+    });
+</script>
 </html>

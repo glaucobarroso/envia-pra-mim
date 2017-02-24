@@ -23,21 +23,6 @@ import javax.validation.Valid;
 @MultipartConfig(fileSizeThreshold=1024*1024, maxFileSize=1024*1024*5, maxRequestSize=1024*1024*5*5)
 public class MainController {
 
-    @PostMapping("/register")
-    public ResponseEntity register(@Valid Product product, BindingResult result) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        ProductValidator productValidator = new ProductValidator();
-        ValidationError validationError = productValidator.validate(product);
-        if (validationError.getCode() == ValidationError.FAIL) {
-            httpHeaders.setContentType(MediaType.TEXT_PLAIN);
-            return new ResponseEntity(validationError.getMessage(), httpHeaders, HttpStatus.BAD_REQUEST);
-        }
-        StorageService repositoryService = new StorageService();
-        repositoryService.storeProduct(product);
-        String jsonInString = "{}";
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity(jsonInString, httpHeaders, HttpStatus.OK);
-    }
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public ResponseEntity upload(@RequestParam("file") MultipartFile file) {

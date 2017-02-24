@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class ProductValidator {
 
-    public static final String SKU_VALIDATION_FAIL = " SKU incorreto, utilize somente caracteres alanumericos.";
+    public static final String SKU_VALIDATION_FAIL = " SKU incorreto, utilize somente caracteres alfanuméricos.";
     public static final String TITLE_VALIDATION_FAIL = " O Título não pode ser vazio.";
     public static final String COST_VALIDATION_FAIL = " O Custo deve ser um número.";
     public static final String QUANTITY_VALIDATION_FAIL = " A quantidade deve ser um número inteiro.";
