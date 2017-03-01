@@ -25,19 +25,8 @@
                     <td th:text="${product.description}">Descri&ccedil;&atilde;o</td>
                     <td th:text="${product.quantity}">Quantidade</td>
                     <td th:text="${product.cost}">Custo</td>
-<!--
-                <td th:if="${t.failedScene.errorMessage} == null and ${t.failedScene.stackTrace} == null"
-                    th:text="${t.result}">Result
-                </td>
-                <td th:unless="${t.failedScene.errorMessage} == null and ${t.failedScene.stackTrace} == null">
-                    <a class="show-fail-modal" data-toggle="modal" data-target="#fail-modal"
-                       th:text="${t.result}">Result</a>
-                    <div id="error-message" style="display: none;"
-                         th:text="${t.failedScene.errorMessage}"></div>
-                    <div id="stack-trace" style="display: none;" th:text="${t.failedScene.stackTrace}"></div>
-                </td>
-                <td th:text="${t.startTime}">Start Time</td>
-                <td th:text="${t.endTime}">End Time</td>-->
+                    <td><button th:id="'update_' + ${product.sku}" type="button" class="btn btn-info update-btn">Alterar</button></td>
+                    <td><button th:id="'delete_' + ${product.sku}" type="button" th:onclick="'deleteNow(\'' + ${product.sku} + '\');'" class="btn btn-danger delete-btn">Deletar</button></td>
                 </tr>
             </tbody>
         </table>

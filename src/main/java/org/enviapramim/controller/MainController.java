@@ -31,4 +31,12 @@ public class MainController {
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public ResponseEntity delete(@RequestParam("sku") String sku) {
+        StorageService storageService = new StorageService();
+        storageService.deleteProduct(sku);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+        return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
+    }
 }
