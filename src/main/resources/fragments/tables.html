@@ -21,11 +21,11 @@
             <tbody>
                 <tr th:each="product : ${products}">
                     <td th:text="${product.sku}">SKU</td>
-                    <td th:text="${product.title}">T&iacute;tulo</td>
-                    <td th:text="${product.description}">Descri&ccedil;&atilde;o</td>
-                    <td th:text="${product.quantity}">Quantidade</td>
-                    <td th:text="${product.cost}">Custo</td>
-                    <td><button th:id="'update_' + ${product.sku}" type="button" class="btn btn-info update-btn">Alterar</button></td>
+                    <td><input th:id="'title_' + ${product.sku}" th:value="${product.title}" type="text" class="form-control" name="title"/></td>
+                    <td><input th:id="'description_' + ${product.sku}" th:value="${product.description}" type="text" class="form-control" name="description"/></td>
+                    <td><input th:id="'quantity_' + ${product.sku}" th:value="${product.quantity}" type="text" class="form-control" name="quantity"/></td>
+                    <td><input th:id="'cost_' + ${product.sku}" th:value="${product.cost}" type="text" class="form-control" name="cost"/></td>
+                    <td><button th:id="'update_' + ${product.sku}" type="button" th:onclick="'updateNow(\'' + ${product.sku} + '\');'" class="btn btn-info update-btn">Alterar</button></td>
                     <td><button th:id="'delete_' + ${product.sku}" type="button" th:onclick="'deleteNow(\'' + ${product.sku} + '\');'" class="btn btn-danger delete-btn">Deletar</button></td>
                 </tr>
             </tbody>

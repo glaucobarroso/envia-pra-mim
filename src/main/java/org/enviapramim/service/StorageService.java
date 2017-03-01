@@ -1,10 +1,7 @@
 package org.enviapramim.service;
 
 import org.enviapramim.model.Product;
-import org.enviapramim.repository.ProductStorageModel;
 import org.enviapramim.repository.StorageRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,4 +23,10 @@ public class StorageService {
         StorageRepository repository = new StorageRepository();
         repository.deleteProduct(sku);
     }
+
+    public void updateProduct(Product product) {
+        StorageRepository repository = new StorageRepository();
+        repository.updateProduct(product);
+    }
+
 }

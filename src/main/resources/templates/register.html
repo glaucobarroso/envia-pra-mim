@@ -15,19 +15,19 @@
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
                     SKU:<br/>
-                    <input type="text" name="sku"/>
+                    <input type="text" class="form-control" name="sku"/>
                     <br/>
                     T&iacute;tulo:<br/>
-                    <input type="text" name="title"/>
+                    <input type="text" class="form-control" name="title"/>
                     <br/>
                     Descri&ccedil;&atilde;o:<br/>
-                    <input type="text" name="description"/>
+                    <input type="text" class="form-control" name="description"/>
                     <br/>
                     Custo:<br/>
-                    <input type="text" name="cost"/>
+                    <input type="text" class="form-control" name="cost"/>
                     <br/>
                     Quantidade:<br/>
-                    <input type="text" name="quantity"/>
+                    <input type="text" class="form-control" name="quantity"/>
                     <br/>
                 </div>
 
@@ -68,7 +68,6 @@
             </div>
         </div>
     </div>
-    <button th:id="'delete_' + ${product.sku}" type="button" onclick="delete();" class="btn btn-danger delete-btn">aaaaaDeletar</button>
 
 </body>
 

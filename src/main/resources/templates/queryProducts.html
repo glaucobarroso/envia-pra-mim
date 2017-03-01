@@ -35,5 +35,29 @@
             });
         }
 
-    </script>
+        function updateNow(sku) {
+            var updateData = "sku=" + sku;
+            var titleId = '#title_' + sku;
+            updateData = updateData.concat("&amp;title=", $(titleId).val());
+            var descriptionId = '#description_' + sku;
+            updateData = updateData.concat('&amp;description=', $(descriptionId).val());
+            var costId = '#cost_' + sku;
+            updateData = updateData.concat('&amp;cost=', $(costId).val());
+            var quantityId = '#quantity_' + sku;
+            updateData = updateData.concat('&amp;quantity=', $(quantityId).val());
+            updateData = updateData.replace(/amp;/g, '');
+            $.ajax({
+                url: "/update",
+                data: updateData,
+                method: "post",
+                success: function(response) {
+                    alert("Produto alterado com Sucesso!");
+                },
+                error: function(xhr) {
+                    alert("Erro ao alterar produto!");
+                }
+            });
+        }
+
+</script>
 </html>

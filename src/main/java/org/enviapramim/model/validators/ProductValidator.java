@@ -71,6 +71,30 @@ public class ProductValidator {
         return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
     }
 
+    public ValidationError validateSimpleUpdate(Product product) {
+        String error = "";
+        if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
+            error += SKU_VALIDATION_FAIL;
+        }
+        if (product.getTitle() == null) {
+            error += TITLE_VALIDATION_FAIL;
+        }
+        if (product.getCost() == null || !validateCost(product.getCost())) {
+            error += COST_VALIDATION_FAIL;
+        }
+        if (product.getQuantity() == null || !validateQuantity(product.getQuantity())) {
+            error += QUANTITY_VALIDATION_FAIL;
+        }
+        if (product.getDescription() == null) {
+            error += DESCRIPTION_VALIDATION_FAIL;
+        }
+
+        if (error.length() != 0) {
+            return new ValidationError(error, ValidationError.FAIL);
+        }
+        return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
+    }
+
     private boolean validateCost(String cost) {
         try {
             Float.parseFloat(cost);

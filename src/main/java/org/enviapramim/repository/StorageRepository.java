@@ -47,6 +47,15 @@ public class StorageRepository {
         entityManager.delete(ProductStorageModel.class, sku);
     }
 
+    public void updateProduct(Product product) {
+        ProductStorageModel productStorageModel = entityManager.load(ProductStorageModel.class, product.getSku());
+        productStorageModel.setTitle(product.getTitle());
+        productStorageModel.setCost(product.getCost());
+        productStorageModel.setDescription(product.getDescription());
+        productStorageModel.setQuantity(product.getQuantity());
+        entityManager.update(productStorageModel);
+    }
+
     private void storeImage(MultipartFile image1, String sku, String number) {
         try {
             //Set Option for that file
