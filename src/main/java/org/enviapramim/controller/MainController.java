@@ -4,6 +4,7 @@ import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.repository.StorageRepository;
+import org.enviapramim.service.MercadoLibreService;
 import org.enviapramim.service.StorageService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,25 @@ public class MainController {
         }
         storageService.updateProduct(product);
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/loginml", method = RequestMethod.GET)
+    public String loginMl() {
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
+        return "redirect:" + mercadoLibreService.getRedirectUrl();
+    }
+
+    @RequestMapping(value = "/mlauthcode", method = RequestMethod.GET)
+    public ResponseEntity mlauthcode(@RequestParam("code") String code) {
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
+        mercadoLibreService.authenticate(code);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return new ResponseEntity("", httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
+    public ResponseEntity mlauth(@RequestParam("accessToken") String accessToken, @RequestParam("refreshToken") String refreshToken) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return new ResponseEntity("", httpHeaders, HttpStatus.OK);
     }
 }

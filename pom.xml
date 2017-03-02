@@ -11,6 +11,13 @@
   <name>envia-pra-mim</name>
   <description>Envia Pra Mim</description>
 
+  <repositories>
+    <repository>
+      <id>mercadolibre-snapshots</id>
+      <url>https://github.com/mercadolibre/java-sdk-repo/raw/master/snapshots</url>
+    </repository>
+  </repositories>
+
   <parent>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-parent</artifactId>
@@ -63,6 +70,12 @@
       <groupId>com.google.appengine.tools</groupId>
       <artifactId>appengine-gcs-client</artifactId>
       <version>RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mercadolibre</groupId>
+      <artifactId>sdk</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
