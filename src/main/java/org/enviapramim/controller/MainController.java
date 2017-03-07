@@ -68,4 +68,14 @@ public class MainController {
         HttpHeaders httpHeaders = new HttpHeaders();
         return new ResponseEntity("", httpHeaders, HttpStatus.OK);
     }
+
+    /*
+    @RequestMapping(value = "/image", method = RequestMethod.GET)
+    public ResponseEntity image() {
+        StorageRepository storageRepository = new StorageRepository();
+        storageRepository.get("", "");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return new ResponseEntity("", httpHeaders, HttpStatus.OK);
+    }
+    */
 }

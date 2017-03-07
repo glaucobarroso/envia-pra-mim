@@ -1,17 +1,14 @@
 package org.enviapramim.repository;
 
-import com.google.appengine.tools.cloudstorage.*;
+
+import com.google.cloud.storage.*;
 import com.jmethods.catatumbo.EntityManager;
 import com.jmethods.catatumbo.EntityManagerFactory;
 import com.jmethods.catatumbo.EntityQueryRequest;
 import com.jmethods.catatumbo.QueryResponse;
 import org.enviapramim.model.Product;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +17,9 @@ import java.util.List;
  */
 public class StorageRepository {
 
-    public static final String PROJECT_ID = "";
-    private static final int BUFFER_SIZE = 2 * 1024 * 1024;
     private static final String BUCKET_NAME = "x-pulsar-158711.appspot.com";
 
     EntityManager entityManager;
-    private final GcsService gcsService  = GcsServiceFactory.createGcsService(new RetryParams.Builder()
-            .initialRetryDelayMillis(10)
-            .retryMaxAttempts(10)
-            .totalRetryPeriodMillis(30000)
-            .build());
 
     public StorageRepository() {
         EntityManagerFactory emf = EntityManagerFactory.getInstance();
@@ -37,8 +27,30 @@ public class StorageRepository {
     }
 
     public Product storeProduct(Product product) {
-       // storeImage(product.getImage1(), product.getSku(), "1");
         ProductStorageModel productStorageModel = convertToProductStorage(product);
+        String link = storeImage(product.getImage1(), product.getSku(), "1");
+        productStorageModel.setLink1(link);
+        if (product.getImage2().getOriginalFilename() != null && product.getImage2().getOriginalFilename().length() > 0) {
+            link = storeImage(product.getImage2(), product.getSku(), "2");
+            productStorageModel.setLink2(link);
+        }
+        if (product.getImage3().getOriginalFilename() != null && product.getImage3().getOriginalFilename().length() > 0) {
+            link = storeImage(product.getImage3(), product.getSku(), "3");
+            productStorageModel.setLink3(link);
+        }
+        if (product.getImage4().getOriginalFilename() != null && product.getImage4().getOriginalFilename().length() > 0) {
+            link = storeImage(product.getImage4(), product.getSku(), "4");
+            productStorageModel.setLink4(link);
+        }
+        if (product.getImage5().getOriginalFilename() != null && product.getImage5().getOriginalFilename().length() > 0) {
+            link = storeImage(product.getImage5(), product.getSku(), "5");
+            productStorageModel.setLink5(link);
+        }
+        if (product.getImage6().getOriginalFilename() != null && product.getImage6().getOriginalFilename().length() > 0) {
+            link = storeImage(product.getImage6(), product.getSku(), "6");
+            productStorageModel.setLink6(link);
+        }
+
         ProductStorageModel retProd = entityManager.insert(productStorageModel);
         return convertFromProductStorage(retProd);
     }
@@ -56,23 +68,31 @@ public class StorageRepository {
         entityManager.update(productStorageModel);
     }
 
-    private void storeImage(MultipartFile image1, String sku, String number) {
+    private String storeImage(MultipartFile image1, String sku, String number) {
         try {
-            //Set Option for that file
-            GcsFileOptions options = new GcsFileOptions.Builder()
-                    .mimeType("image")
-                    .acl("public-read")
-                    .build();
-            GcsFilename fileName = new GcsFilename(BUCKET_NAME, sku + number);
-            GcsOutputChannel outputChannel;
-            GcsService gcsService1 = GcsServiceFactory.createGcsService();
-            outputChannel = gcsService1.createOrReplace(fileName, options);
-            copy(image1.getInputStream(), Channels.newOutputStream(outputChannel));
+            String fileExt = getImageExt(image1.getOriginalFilename());
+            Storage storage = StorageOptions.getDefaultInstance().getService();
+            List<Acl> acls = new ArrayList<>();
+            acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+            Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, sku + number + "." + fileExt).setAcl(acls).build(),
+                                image1.getInputStream());
+            return blob.getMediaLink();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    private String getImageExt(String originalFilename) {
+        String extension = "";
+
+        int i = originalFilename.lastIndexOf('.');
+        if (i > 0) {
+            extension = originalFilename.substring(i+1);
+        }
+        return extension;
     }
 
     public List<Product> queryAllProducts() {
@@ -84,23 +104,6 @@ public class StorageRepository {
             productList.add(convertFromProductStorage(productStorageModel));
         }
         return productList;
-    }
-
-    /**
-     * Transfer the data from the inputStream to the outputStream. Then close both streams.
-     */
-    private void copy(InputStream input, OutputStream output) throws IOException {
-        try {
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int bytesRead = input.read(buffer);
-            while (bytesRead != -1) {
-                output.write(buffer, 0, bytesRead);
-                bytesRead = input.read(buffer);
-            }
-        } finally {
-            input.close();
-            output.close();
-        }
     }
 
     private ProductStorageModel convertToProductStorage(Product product) {
