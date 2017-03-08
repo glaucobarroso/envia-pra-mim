@@ -18,6 +18,7 @@ public class ProductStorageModel {
     private String cost;
     private String quantity;
     private String link1;
+    private String thumbNailLink;
     private String link2;
     private String link3;
     private String link4;
@@ -112,4 +113,11 @@ public class ProductStorageModel {
         this.link6 = link6;
     }
 
+    public String getThumbNailLink() {
+        return thumbNailLink;
+    }
+
+    public void setThumbNailLink(String thumbNailLink) {
+        this.thumbNailLink = thumbNailLink;
+    }
 }

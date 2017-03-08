@@ -6,6 +6,7 @@ import com.jmethods.catatumbo.EntityManager;
 import com.jmethods.catatumbo.EntityManagerFactory;
 import com.jmethods.catatumbo.EntityQueryRequest;
 import com.jmethods.catatumbo.QueryResponse;
+import org.enviapramim.Utils.images.ImageTransformer;
 import org.enviapramim.model.Product;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -20,16 +21,22 @@ public class StorageRepository {
     private static final String BUCKET_NAME = "x-pulsar-158711.appspot.com";
 
     EntityManager entityManager;
+    private ImageTransformer imageTransformer;
 
     public StorageRepository() {
         EntityManagerFactory emf = EntityManagerFactory.getInstance();
         entityManager = emf.createDefaultEntityManager();
+        imageTransformer = new ImageTransformer();
     }
 
     public Product storeProduct(Product product) {
         ProductStorageModel productStorageModel = convertToProductStorage(product);
         String link = storeImage(product.getImage1(), product.getSku(), "1");
         productStorageModel.setLink1(link);
+        byte[] thumbnailBytes = imageTransformer.generateThumbnail(product.getImage1());
+        String thumbnailLink = storeImageBytes(thumbnailBytes, createImageName(product.getImage1().getOriginalFilename(),
+                                                product.getSku(), "thumb1"));
+        productStorageModel.setThumbNailLink(thumbnailLink);
         if (product.getImage2().getOriginalFilename() != null && product.getImage2().getOriginalFilename().length() > 0) {
             link = storeImage(product.getImage2(), product.getSku(), "2");
             productStorageModel.setLink2(link);
@@ -70,12 +77,13 @@ public class StorageRepository {
 
     private String storeImage(MultipartFile image1, String sku, String number) {
         try {
-            String fileExt = getImageExt(image1.getOriginalFilename());
             Storage storage = StorageOptions.getDefaultInstance().getService();
             List<Acl> acls = new ArrayList<>();
             acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-            Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, sku + number + "." + fileExt).setAcl(acls).build(),
+            Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, createImageName(image1.getOriginalFilename(),
+                                sku, number)).setAcl(acls).build(),
                                 image1.getInputStream());
+
             return blob.getMediaLink();
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,14 +93,17 @@ public class StorageRepository {
         return null;
     }
 
-    private String getImageExt(String originalFilename) {
-        String extension = "";
+    private String storeImageBytes(byte[] image, String imageName) {
+        Storage storage = StorageOptions.getDefaultInstance().getService();
+        List<Acl> acls = new ArrayList<>();
+        acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+        Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, imageName).setAcl(acls).build(), image);
+        return blob.getMediaLink();
+    }
 
-        int i = originalFilename.lastIndexOf('.');
-        if (i > 0) {
-            extension = originalFilename.substring(i+1);
-        }
-        return extension;
+    private String createImageName(String originalName, String sku, String number) {
+        String fileExt = imageTransformer.getImageExt(originalName);
+        return sku + number + "." + fileExt;
     }
 
     public List<Product> queryAllProducts() {
