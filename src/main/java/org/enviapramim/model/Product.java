@@ -25,6 +25,7 @@ public class Product {
     private MultipartFile image4;
     private MultipartFile image5;
     private MultipartFile image6;
+    private String link1;
 
     public String getSku() {
         return sku;
@@ -112,6 +113,14 @@ public class Product {
 
     public void setImage6(MultipartFile image6) {
         this.image6 = image6;
+    }
+
+    public String getLink1() {
+        return link1;
+    }
+
+    public void setLink1(String link1) {
+        this.link1 = link1;
     }
 
 }

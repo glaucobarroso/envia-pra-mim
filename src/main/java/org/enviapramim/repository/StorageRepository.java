@@ -123,6 +123,7 @@ public class StorageRepository {
         product.setDescription(productStorageModel.getDescription());
         product.setTitle(productStorageModel.getTitle());
         product.setQuantity(productStorageModel.getQuantity());
+        product.setLink1(productStorageModel.getLink1());
         return product;
     }
 }

@@ -11,6 +11,7 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th></th>
                 <th>SKU</th>
                 <th>T&iacute;tulo</th>
                 <th>Descri&ccedil;&atilde;o</th>
@@ -20,7 +21,8 @@
             </thead>
             <tbody>
                 <tr th:each="product : ${products}">
-                    <td th:text="${product.sku}">SKU</td>
+                    <td><img th:src="${product.link1}" style="width:80px;height:80px;"/></td>
+                    <td th:text="${product.sku}" style="font-weight:bold;">SKU</td>
                     <td><input th:id="'title_' + ${product.sku}" th:value="${product.title}" type="text" class="form-control" name="title"/></td>
                     <td><input th:id="'description_' + ${product.sku}" th:value="${product.description}" type="text" class="form-control" name="description"/></td>
                     <td><input th:id="'quantity_' + ${product.sku}" th:value="${product.quantity}" type="text" class="form-control" name="quantity"/></td>
