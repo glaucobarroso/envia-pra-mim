@@ -38,4 +38,32 @@
     </div>
 </div>
 
+<div th:fragment="usermldata">
+
+    <!-- <img id="test-history-loading" src="../../img/loading.gif" alt="Loading..."
+         style="display: none; margin-left: auto; margin-right: auto"/> -->
+
+    <div th:if="${usermldata} != null and !${#lists.isEmpty(usermldata)}" id="usermldata-table" class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Access Token</th>
+                <th>Refresh Token</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${usermldata}">
+                <td th:text="${user.username}">Username</td>
+                <td th:text="${user.mlAccessToken}">Access Token</td>
+                <td th:text="${user.mlRefreshToken}">Refresh Token</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:unless="${usermldata} != null and !${#lists.isEmpty(usermldata)}">
+        No data
+    </div>
+</div>
+
 </html>

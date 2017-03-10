@@ -2,6 +2,8 @@ package org.enviapramim.service;
 
 import org.enviapramim.model.Product;
 import org.enviapramim.repository.StorageRepository;
+import org.enviapramim.repository.UserMlData;
+
 import java.util.List;
 
 /**
@@ -9,24 +11,36 @@ import java.util.List;
  */
 public class StorageService {
 
+    private StorageRepository storageRepository;
+
+    public StorageService() {
+        storageRepository = new StorageRepository();
+    }
     public Product storeProduct(Product product) {
-        StorageRepository storageRepository = new StorageRepository();
         return storageRepository.storeProduct(product);
     }
 
     public List<Product> queryAllProducts() {
-        StorageRepository repository = new StorageRepository();
-        return repository.queryAllProducts();
+        return storageRepository.queryAllProducts();
     }
 
     public void deleteProduct(String sku) {
-        StorageRepository repository = new StorageRepository();
-        repository.deleteProduct(sku);
+        storageRepository.deleteProduct(sku);
     }
 
     public void updateProduct(Product product) {
-        StorageRepository repository = new StorageRepository();
-        repository.updateProduct(product);
+        storageRepository.updateProduct(product);
     }
 
+    public UserMlData addUserMlData(String username, String accessToken, String refreshAccessToken) {
+        UserMlData userMlData = new UserMlData();
+        userMlData.setUsername(username);
+        userMlData.setMlAccessToken(accessToken);
+        userMlData.setMlRefreshToken(refreshAccessToken);
+        return storageRepository.addUserMlData(userMlData);
+    }
+
+    public List<UserMlData> queryAllUserMlData() {
+        return storageRepository.queryAllUserMlData();
+    }
 }

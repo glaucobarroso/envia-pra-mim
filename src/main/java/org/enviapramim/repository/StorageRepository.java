@@ -117,6 +117,16 @@ public class StorageRepository {
         return productList;
     }
 
+    public UserMlData addUserMlData(UserMlData userMlData) {
+        return entityManager.insert(userMlData);
+    }
+
+    public List<UserMlData> queryAllUserMlData() {
+        EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM storage");
+        QueryResponse<UserMlData> response = entityManager.executeEntityQueryRequest(UserMlData.class, request);
+        return response.getResults();
+    }
+
     private ProductStorageModel convertToProductStorage(Product product) {
         ProductStorageModel productStorageModel = new ProductStorageModel();
         productStorageModel.setSku(product.getSku());

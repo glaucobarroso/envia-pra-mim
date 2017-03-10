@@ -65,17 +65,10 @@ public class MainController {
 
     @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
     public ResponseEntity mlauth(@RequestParam("accessToken") String accessToken, @RequestParam("refreshToken") String refreshToken) {
+        StorageService storageService = new StorageService();
+        storageService.addUserMlData("username", accessToken, refreshToken);
         HttpHeaders httpHeaders = new HttpHeaders();
         return new ResponseEntity("", httpHeaders, HttpStatus.OK);
     }
 
-    /*
-    @RequestMapping(value = "/image", method = RequestMethod.GET)
-    public ResponseEntity image() {
-        StorageRepository storageRepository = new StorageRepository();
-        storageRepository.get("", "");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return new ResponseEntity("", httpHeaders, HttpStatus.OK);
-    }
-    */
 }
