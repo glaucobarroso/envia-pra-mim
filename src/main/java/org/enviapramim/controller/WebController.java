@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Controller
 public class WebController {
-
+/*
     @RequestMapping(value = "/queryProduct")
     public String queryProduct(Model model) {
         StorageService storageService = new StorageService();
@@ -61,5 +61,5 @@ public class WebController {
             model.addAttribute("response", "Produto cadastrado com SUCESSO!!!");
         }
         return "register";
-    }
+    }*/
 }

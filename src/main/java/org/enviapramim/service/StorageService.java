@@ -43,4 +43,9 @@ public class StorageService {
     public List<UserMlData> queryAllUserMlData() {
         return storageRepository.queryAllUserMlData();
     }
+
+    public void deleteAllUserInfo() {
+        storageRepository.deleteAllUserInfo();
+    }
 }
+

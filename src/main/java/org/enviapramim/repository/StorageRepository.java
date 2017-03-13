@@ -127,6 +127,10 @@ public class StorageRepository {
         return response.getResults();
     }
 
+    public void deleteAllUserInfo() {
+        entityManager.deleteAll(UserMlData.class);
+    }
+
     private ProductStorageModel convertToProductStorage(Product product) {
         ProductStorageModel productStorageModel = new ProductStorageModel();
         productStorageModel.setSku(product.getSku());

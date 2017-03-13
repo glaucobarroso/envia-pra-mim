@@ -3,7 +3,7 @@ package org.enviapramim.controller;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.validators.ProductValidator;
-import org.enviapramim.repository.StorageRepository;
+import org.enviapramim.repository.UserMlData;
 import org.enviapramim.service.MercadoLibreService;
 import org.enviapramim.service.StorageService;
 import org.springframework.http.HttpHeaders;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.annotation.MultipartConfig;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by glauco on 16/02/17.
@@ -56,22 +56,56 @@ public class MainController {
     }
 
     @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
-    public ResponseEntity mlauthcode(@RequestParam(value = "code", required = false) String code) {
+    public String mlauthcode(@RequestParam(value = "code", required = false) String code) {
         if (code != null && code.length() > 0) {
             MercadoLibreService mercadoLibreService = new MercadoLibreService();
             mercadoLibreService.authenticate(code);
         }
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return new ResponseEntity("", httpHeaders, HttpStatus.OK);
+        return "mlLoginCallback";
     }
 
-    /*
-    @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
-    public ResponseEntity mlauth(@RequestParam("accessToken") String accessToken, @RequestParam("refreshToken") String refreshToken) {
+    @RequestMapping(value = "/queryProduct")
+    public String queryProduct(Model model) {
         StorageService storageService = new StorageService();
-        storageService.addUserMlData("usernameA", accessToken, refreshToken);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return new ResponseEntity("", httpHeaders, HttpStatus.OK);
-    }*/
+        List<Product> productList = storageService.queryAllProducts();
+        model.addAttribute("products", productList);
+        return "queryProducts";
+    }
 
+    @RequestMapping(value = "/queryUserMlData")
+    public String queryUserMlData(Model model) {
+        StorageService storageService = new StorageService();
+        List<UserMlData> userMlDataList = storageService.queryAllUserMlData();
+        model.addAttribute("usermldata", userMlDataList);
+        return "queryUserMlData";
+    }
+
+    @GetMapping("/register")
+    public String registerForm(Model model) {
+        model.addAttribute("product", new Product());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String register(@Valid Product product, BindingResult result, Model model) {
+        ProductValidator productValidator = new ProductValidator();
+        ValidationError validationError = productValidator.validate(product);
+
+        if (validationError.getCode() == ValidationError.FAIL) {
+            model.addAttribute("response", validationError.getMessage());
+        } else {
+            StorageService repositoryService = new StorageService();
+            repositoryService.storeProduct(product);
+            model.addAttribute("response", "Produto cadastrado com SUCESSO!!!");
+        }
+        return "register";
+    }
+
+    @GetMapping("/deleteAllUsers")
+    public ResponseEntity deleteAlUsers() {
+        StorageService storageService = new StorageService();
+        storageService.deleteAllUserInfo();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
+    }
 }
