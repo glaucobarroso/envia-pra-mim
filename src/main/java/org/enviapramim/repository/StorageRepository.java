@@ -122,7 +122,7 @@ public class StorageRepository {
     }
 
     public List<UserMlData> queryAllUserMlData() {
-        EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM storage");
+        EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM user");
         QueryResponse<UserMlData> response = entityManager.executeEntityQueryRequest(UserMlData.class, request);
         return response.getResults();
     }

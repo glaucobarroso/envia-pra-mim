@@ -55,20 +55,23 @@ public class MainController {
         return "redirect:" + mercadoLibreService.getRedirectUrl();
     }
 
-    @RequestMapping(value = "/mlauthcode", method = RequestMethod.GET)
-    public ResponseEntity mlauthcode(@RequestParam("code") String code) {
-        MercadoLibreService mercadoLibreService = new MercadoLibreService();
-        mercadoLibreService.authenticate(code);
+    @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
+    public ResponseEntity mlauthcode(@RequestParam(value = "code", required = false) String code) {
+        if (code != null && code.length() > 0) {
+            MercadoLibreService mercadoLibreService = new MercadoLibreService();
+            mercadoLibreService.authenticate(code);
+        }
         HttpHeaders httpHeaders = new HttpHeaders();
         return new ResponseEntity("", httpHeaders, HttpStatus.OK);
     }
 
+    /*
     @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
     public ResponseEntity mlauth(@RequestParam("accessToken") String accessToken, @RequestParam("refreshToken") String refreshToken) {
         StorageService storageService = new StorageService();
-        storageService.addUserMlData("username", accessToken, refreshToken);
+        storageService.addUserMlData("usernameA", accessToken, refreshToken);
         HttpHeaders httpHeaders = new HttpHeaders();
         return new ResponseEntity("", httpHeaders, HttpStatus.OK);
-    }
+    }*/
 
 }
