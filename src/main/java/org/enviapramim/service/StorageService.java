@@ -24,6 +24,10 @@ public class StorageService {
         return storageRepository.queryAllProducts();
     }
 
+    public Product queryBySKU(String sku) {
+        return storageRepository.queryBySKU(sku);
+    }
+
     public void deleteProduct(String sku) {
         storageRepository.deleteProduct(sku);
     }

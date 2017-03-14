@@ -108,4 +108,12 @@ public class MainController {
         HttpHeaders httpHeaders = new HttpHeaders();
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
+
+    @GetMapping("/listProduct")
+    public ResponseEntity listProduct() {
+        StorageService storageService = new StorageService();
+        Product product = storageService.queryBySKU("teste");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
+    }
 }

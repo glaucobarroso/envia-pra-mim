@@ -1,7 +1,14 @@
 package org.enviapramim.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.sdk.AuthorizationFailure;
 import com.mercadolibre.sdk.Meli;
+import org.enviapramim.model.Product;
+import org.enviapramim.model.ml.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Glauco on 01/03/2017.
@@ -31,5 +38,36 @@ public class MercadoLibreService {
             return false;
         }
         return true;
+    }
+
+    public String convertProductToItemJson(Product product) {
+        Item item = new Item();
+        item.setTitle(product.getTitle());
+        item.setAvailableQuantity(9999);
+        item.setPrice(1000.90f);
+        item.setCategoryId("MLB3530");
+        item.setCurrencyId("BRL");
+        item.setBuyingMode("buy_it_now");
+        item.setListingTypeId("free");
+        item.setCondition("new");
+        item.setDescription(product.getDescription());
+        item.setWarranty("90 dias");
+        item.setVideoId(null);
+
+        List<Item.Picture> pictureList = new ArrayList<Item.Picture>();
+        Item.Picture picture = item.new Picture();
+        picture.setSource(product.getLink1());
+        pictureList.add(picture);
+        item.setPictures(pictureList);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(item);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return jsonInString;
     }
 }
