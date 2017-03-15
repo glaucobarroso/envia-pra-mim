@@ -109,11 +109,14 @@ public class MainController {
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
 
-    @GetMapping("/listProduct")
+    @GetMapping("/offerProduct")
     public ResponseEntity listProduct() {
         StorageService storageService = new StorageService();
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
         Product product = storageService.queryBySKU("teste");
+        UserMlData userMlData = storageService.queryUserMl("testUser");
+        String result = mercadoLibreService.offerProduct(product, userMlData.getMlAccessToken());
         HttpHeaders httpHeaders = new HttpHeaders();
-        return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
+        return new ResponseEntity(result, httpHeaders, HttpStatus.OK);
     }
 }

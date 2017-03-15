@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.sdk.AuthorizationFailure;
 import com.mercadolibre.sdk.Meli;
+import com.mercadolibre.sdk.MeliException;
+import com.ning.http.client.FluentStringsMap;
+import com.ning.http.client.Response;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ml.Item;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +36,7 @@ public class MercadoLibreService {
         try {
             meli.authorize(code, AUTH_CALLBACK);
             StorageService storageService = new StorageService();
-            storageService.addUserMlData("usernameA", meli.getAccessToken(), meli.getRefreshToken());
+            storageService.addUserMlData("testUser", meli.getAccessToken(), meli.getRefreshToken());
         } catch (AuthorizationFailure authorizationFailure) {
             authorizationFailure.printStackTrace();
             return false;
@@ -40,25 +44,38 @@ public class MercadoLibreService {
         return true;
     }
 
-    public String convertProductToItemJson(Product product) {
+    public String offerProduct(Product product, String accessToken) {
+        try {
+            FluentStringsMap params = new FluentStringsMap();
+            params.add("access_token", accessToken);
+            Response response = meli.post("/items", params, convertProductToItemJson(product));
+            return response.getResponseBody();
+        } catch (MeliException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String convertProductToItemJson(Product product) {
         Item item = new Item();
-        item.setTitle(product.getTitle());
-        item.setAvailableQuantity(9999);
-        item.setPrice(1000.90f);
-        item.setCategoryId("MLB3530");
-        item.setCurrencyId("BRL");
-        item.setBuyingMode("buy_it_now");
-        item.setListingTypeId("free");
-        item.setCondition("new");
-        item.setDescription(product.getDescription());
-        item.setWarranty("90 dias");
-        item.setVideoId(null);
+        item.title = product.getTitle();
+        item.available_quantity = 1;
+        item.price = 1000.90f;
+        item.category_id = "MLB3530";
+        item.currency_id = "BRL";
+        item.buying_mode = "buy_it_now";
+        item.listing_type_id = "free";
+        item.condition = "new";
+        item.description = product.getDescription();
+        item.warranty = "90 dias";
 
         List<Item.Picture> pictureList = new ArrayList<Item.Picture>();
         Item.Picture picture = item.new Picture();
-        picture.setSource(product.getLink1());
+        picture.source = product.getLink1();
         pictureList.add(picture);
-        item.setPictures(pictureList);
+        item.pictures = pictureList;
 
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = "";

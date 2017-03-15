@@ -44,6 +44,10 @@ public class StorageService {
         return storageRepository.addUserMlData(userMlData);
     }
 
+    public UserMlData queryUserMl(String username) {
+        return storageRepository.queryUserMl(username);
+    }
+
     public List<UserMlData> queryAllUserMlData() {
         return storageRepository.queryAllUserMlData();
     }

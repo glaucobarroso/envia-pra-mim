@@ -118,15 +118,13 @@ public class StorageRepository {
     }
 
     public Product queryBySKU(String sku) {
-        EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM storage WHERE sku=@1");
-        request.addPositionalBinding(sku);
-        QueryResponse<ProductStorageModel> response = entityManager.executeEntityQueryRequest(ProductStorageModel.class, request);
-        List<ProductStorageModel> productStorageList = response.getResults();
-        List<Product> productList = new ArrayList<Product>();
-        for (ProductStorageModel productStorageModel : productStorageList) {
-            productList.add(convertFromProductStorage(productStorageModel));
-        }
-        return productList.get(0);
+        ProductStorageModel productStorage = entityManager.load(ProductStorageModel.class, sku);
+        return convertFromProductStorage(productStorage);
+    }
+
+    public UserMlData queryUserMl(String username) {
+        UserMlData userMlData = entityManager.load(UserMlData.class, username);
+        return userMlData;
     }
 
     public UserMlData addUserMlData(UserMlData userMlData) {
