@@ -7,6 +7,41 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+<script th:inline="javascript">
+
+    var titlesIndex = 0;
+    var imagesIndex = 0;
+    var my_max_images = 6;
+
+    function addTitle() {
+        titlesIndex++;
+        var newInput = '<input type="text" class="form-control" name="titles[' + titlesIndex + ']"/>';
+        $('#titles-wrap').append(newInput);
+    }
+
+    function removeTitle() {
+        if (titlesIndex > 0) {
+            $('#titles-wrap').children().last().remove();
+            titlesIndex--;
+        }
+    }
+
+    function addImage() {
+        if ((my_max_images - 1) > imagesIndex) {
+            imagesIndex++;
+            var newInput = '<input type="file" name="images[' + imagesIndex + ']"/>';
+            $('#images-wrap').append(newInput);
+        }
+    }
+
+    function removeImage() {
+        if (imagesIndex > 0) {
+            $('#images-wrap').children().last().remove();
+            imagesIndex--;
+        }
+    }
+
+</script>
 <body>
 
     <div th:include="../fragments/common::header"></div>
@@ -14,50 +49,42 @@
         <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
-                    SKU:<br/>
+                    <label>SKU</label><br/>
                     <input type="text" class="form-control" name="sku"/>
-                    <br/>
-                    T&iacute;tulo:<br/>
+                    <label>T&iacute;tulo</label><br/>
                     <input type="text" class="form-control" name="title"/>
-                    <br/>
-                    Descri&ccedil;&atilde;o:<br/>
+                    <label>Descri&ccedil;&atilde;o</label><br/>
                     <input type="text" class="form-control" name="description"/>
-                    <br/>
-                    Custo:<br/>
+                    <label>Custo</label><br/>
                     <input type="text" class="form-control" name="cost"/>
-                    <br/>
-                    Quantidade:<br/>
+                    <label>Quantidade</label><br/>
                     <input type="text" class="form-control" name="quantity"/>
                     <br/>
                 </div>
 
                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-2">
-                    Imagem Principal:<br/>
-                    <input type="file" name="image1"/>
+                    <label>T&iacute;tulos Mercado Livre</label><br/>
+                    <div id="titles-wrap">
+                        <input type="text" class="form-control" name="titles[0]"/>
+                    </div>
                     <br/>
-                    Imagem 2:<br/>
-                    <input type="file" name="image2"/>
-                    <br/>
-                    Imagem 3:<br/>
-                    <input type="file" name="image3"/>
-                    <br/>
+                    <button type="button" class="btn btn-primary" id="add-title" onclick="addTitle();">Adicionar T&iacute;tulo</button>
+                    <button type="button" class="btn btn-danger" id="remove-title" onclick="removeTitle();">Remover T&iacute;tulo</button>
                 </div>
+
                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-2">
-                    Imagem 4:<br/>
-                    <input type="file" name="image4"/>
+                    <label>Imagens:</label><br/>
+                    <div id="images-wrap">
+                        <input type="file" name="images[0]"/>
+                    </div>
                     <br/>
-                    Imagem 5:<br/>
-                    <input type="file" name="image5"/>
-                    <br/>
-                    Imagem 6:<br/>
-                    <input type="file" name="image6"/>
-                    <br/>
+                    <button type="button" class="btn btn-primary" id="add-image" onclick="addImage();">Adicionar Imagem</button>
+                    <button type="button" class="btn btn-danger" id="remove-image" onclick="removeImage();">Remover Imagem</button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
-                    <br/>
-                    <input type="submit" value="Cadastrar"/>
+                    <button class="btn btn-primary" type="submit">Cadastrar</button>
                 </div>
             </div>
         </form>

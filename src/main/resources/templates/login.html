@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div th:include="../fragments/common::header"></div>
+
+    <div class="container">
+        <form th:action="@{/login}" method="post">
+            <div><label> Nome do usu&aacute;rio : <input type="text" class="form-control" name="username"/> </label></div>
+            <div><label> Senha: <input type="password" class="form-control" name="password"/> </label></div>
+            <div><button class="btn btn-primary" type="submit">Entrar</button></div>
+        </form>
+        <div th:if="${param.error}">
+            Nome do usu&aacute;rio ou senha incorretos.
+        </div>
+        <div th:if="${param.logout}">
+            Voc&ecirc; saiu.
+        </div>
+    </div>
+</body>
+</html>

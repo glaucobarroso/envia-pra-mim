@@ -16,15 +16,11 @@ public class Product {
 
     private String sku;
     private String title;
+    private List<String> titles;
     private String description;
     private String cost;
     private String quantity;
-    private MultipartFile image1;
-    private MultipartFile image2;
-    private MultipartFile image3;
-    private MultipartFile image4;
-    private MultipartFile image5;
-    private MultipartFile image6;
+    private List<MultipartFile> images;
     private String link1;
 
     public String getSku() {
@@ -33,14 +29,6 @@ public class Product {
 
     public void setSku(String sku) {
         this.sku = sku;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {
@@ -67,54 +55,6 @@ public class Product {
         this.cost = cost;
     }
 
-    public MultipartFile getImage1() {
-        return image1;
-    }
-
-    public void setImage1(MultipartFile image1) {
-        this.image1 = image1;
-    }
-
-    public MultipartFile getImage2() {
-        return image2;
-    }
-
-    public void setImage2(MultipartFile image2) {
-        this.image2 = image2;
-    }
-
-    public MultipartFile getImage3() {
-        return image3;
-    }
-
-    public void setImage3(MultipartFile image3) {
-        this.image3 = image3;
-    }
-
-    public MultipartFile getImage4() {
-        return image4;
-    }
-
-    public void setImage4(MultipartFile image4) {
-        this.image4 = image4;
-    }
-
-    public MultipartFile getImage5() {
-        return image5;
-    }
-
-    public void setImage5(MultipartFile image5) {
-        this.image5 = image5;
-    }
-
-    public MultipartFile getImage6() {
-        return image6;
-    }
-
-    public void setImage6(MultipartFile image6) {
-        this.image6 = image6;
-    }
-
     public String getLink1() {
         return link1;
     }
@@ -123,4 +63,27 @@ public class Product {
         this.link1 = link1;
     }
 
+    public List<String> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<String> titles) {
+        this.titles = titles;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<MultipartFile> getImages() {
+        return images;
+    }
+
+    public void setImages(List<MultipartFile> images) {
+        this.images = images;
+    }
 }

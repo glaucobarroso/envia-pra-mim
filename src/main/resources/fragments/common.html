@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <body>
 
@@ -8,17 +8,26 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="index.html">Envia Pra Mim</a>
+                    <a class="navbar-brand" href="/">Envia Pra Mim</a>
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="/register">Cadastrar no Estoque</a></li>
                     <li><a href="/queryProduct">Consultar o Estoque</a></li>
                     <li><a href="/offerProduct">Anunciar</a></li>
+                    <li><a href="/queryUserMlDat">Consultar o Usu&aacute;rios</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/queryUserMlData"><span class="glyphicon glyphicon-user"></span> Registrar-se</a></li>
-                    <li><a href="/loginml"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                </ul>
+                <div sec:authorize="isAuthenticated()">
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- <li><a href="/deleteAllUsers"><span class="glyphicon glyphicon-user"></span> Registrar-se</a></li> -->
+                        <li><a href="/login"><span class="glyphicon glyphicon-log-out"></span> Sair</a></li>
+                    </ul>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- <li><a href="/deleteAllUsers"><span class="glyphicon glyphicon-user"></span> Registrar-se</a></li> -->
+                        <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </div>

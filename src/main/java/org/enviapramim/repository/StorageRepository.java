@@ -31,32 +31,20 @@ public class StorageRepository {
 
     public Product storeProduct(Product product) {
         ProductStorageModel productStorageModel = convertToProductStorage(product);
-        String link = storeImage(product.getImage1(), product.getSku(), "1");
-        productStorageModel.setLink1(link);
-        byte[] thumbnailBytes = imageTransformer.generateThumbnail(product.getImage1());
-        String thumbnailLink = storeImageBytes(thumbnailBytes, createImageName(product.getImage1().getOriginalFilename(),
-                                                product.getSku(), "thumb1"));
+
+        // generating thumbnail for the main image
+        MultipartFile mainImage = product.getImages().get(0);
+        byte[] thumbnailBytes = imageTransformer.generateThumbnail(mainImage);
+        String thumbnailLink = storeImageBytes(thumbnailBytes, createImageName(mainImage.getOriginalFilename(),
+                product.getSku(), "thumb1"));
         productStorageModel.setThumbNailLink(thumbnailLink);
-        if (product.getImage2().getOriginalFilename() != null && product.getImage2().getOriginalFilename().length() > 0) {
-            link = storeImage(product.getImage2(), product.getSku(), "2");
-            productStorageModel.setLink2(link);
+
+        ArrayList<String> linksList = new ArrayList<String>();
+        for (int i = 0; i < product.getImages().size(); i++) {
+            String link = storeImage(product.getImages().get(i), product.getSku(), Integer.toString(i));
+            linksList.add(link);
         }
-        if (product.getImage3().getOriginalFilename() != null && product.getImage3().getOriginalFilename().length() > 0) {
-            link = storeImage(product.getImage3(), product.getSku(), "3");
-            productStorageModel.setLink3(link);
-        }
-        if (product.getImage4().getOriginalFilename() != null && product.getImage4().getOriginalFilename().length() > 0) {
-            link = storeImage(product.getImage4(), product.getSku(), "4");
-            productStorageModel.setLink4(link);
-        }
-        if (product.getImage5().getOriginalFilename() != null && product.getImage5().getOriginalFilename().length() > 0) {
-            link = storeImage(product.getImage5(), product.getSku(), "5");
-            productStorageModel.setLink5(link);
-        }
-        if (product.getImage6().getOriginalFilename() != null && product.getImage6().getOriginalFilename().length() > 0) {
-            link = storeImage(product.getImage6(), product.getSku(), "6");
-            productStorageModel.setLink6(link);
-        }
+        productStorageModel.setLinks(linksList);
 
         ProductStorageModel retProd = entityManager.insert(productStorageModel);
         return convertFromProductStorage(retProd);
@@ -128,7 +116,12 @@ public class StorageRepository {
     }
 
     public UserMlData addUserMlData(UserMlData userMlData) {
-        return entityManager.insert(userMlData);
+        UserMlData currUserMlData = queryUserMl(userMlData.getUsername());
+        if (currUserMlData == null) {
+            return entityManager.insert(userMlData);
+        } else {
+            return entityManager.update(userMlData);
+        }
     }
 
     public List<UserMlData> queryAllUserMlData() {
@@ -147,6 +140,7 @@ public class StorageRepository {
         productStorageModel.setCost(product.getCost());
         productStorageModel.setDescription(product.getDescription());
         productStorageModel.setTitle(product.getTitle());
+        productStorageModel.setTitles(product.getTitles());
         productStorageModel.setQuantity(product.getQuantity());
         return productStorageModel;
     }
@@ -157,6 +151,7 @@ public class StorageRepository {
         product.setCost(productStorageModel.getCost());
         product.setDescription(productStorageModel.getDescription());
         product.setTitle(productStorageModel.getTitle());
+        product.setTitles(productStorageModel.getTitles());
         product.setQuantity(productStorageModel.getQuantity());
         product.setLink1(productStorageModel.getThumbNailLink());
         return product;

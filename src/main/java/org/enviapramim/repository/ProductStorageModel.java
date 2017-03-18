@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jmethods.catatumbo.Entity;
 import com.jmethods.catatumbo.Identifier;
 
+import java.util.List;
+
 /**
  * Created by glauco on 21/02/17.
  */
@@ -14,16 +16,12 @@ public class ProductStorageModel {
     @Identifier
     private String sku;
     private String title;
+    private List<String> titles;
     private String description;
     private String cost;
     private String quantity;
-    private String link1;
+    private List<String> links;
     private String thumbNailLink;
-    private String link2;
-    private String link3;
-    private String link4;
-    private String link5;
-    private String link6;
 
     public String getSku() {
         return sku;
@@ -31,14 +29,6 @@ public class ProductStorageModel {
 
     public void setSku(String sku) {
         this.sku = sku;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {
@@ -65,59 +55,35 @@ public class ProductStorageModel {
         this.cost = cost;
     }
 
-    public String getLink1() {
-        return link1;
-    }
-
-    public void setLink1(String link1) {
-        this.link1 = link1;
-    }
-
-    public String getLink2() {
-        return link2;
-    }
-
-    public void setLink2(String link2) {
-        this.link2 = link2;
-    }
-
-    public String getLink3() {
-        return link3;
-    }
-
-    public void setLink3(String link3) {
-        this.link3 = link3;
-    }
-
-    public String getLink4() {
-        return link4;
-    }
-
-    public void setLink4(String link4) {
-        this.link4 = link4;
-    }
-
-    public String getLink5() {
-        return link5;
-    }
-
-    public void setLink5(String link5) {
-        this.link5 = link5;
-    }
-
-    public String getLink6() {
-        return link6;
-    }
-
-    public void setLink6(String link6) {
-        this.link6 = link6;
-    }
-
     public String getThumbNailLink() {
         return thumbNailLink;
     }
 
     public void setThumbNailLink(String thumbNailLink) {
         this.thumbNailLink = thumbNailLink;
+    }
+
+    public List<String> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<String> titles) {
+        this.titles = titles;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<String> links) {
+        this.links = links;
     }
 }

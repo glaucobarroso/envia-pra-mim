@@ -17,6 +17,9 @@ public class Item {
     public String description;
     public String warranty;
     public List<Picture> pictures;
+    public boolean accepts_mercadopago;
+    public Shipping shipping;
+    public SellerAddress seller_address;
 
     public class Picture {
         public String source;

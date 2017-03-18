@@ -28,7 +28,7 @@ public class ProductValidator {
         if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
             error += SKU_VALIDATION_FAIL;
         }
-        if (product.getTitle() == null) {
+        if (product.getTitles() == null) {
             error += TITLE_VALIDATION_FAIL;
         }
         if (product.getCost() == null || !validateCost(product.getCost())) {
@@ -40,29 +40,28 @@ public class ProductValidator {
         if (product.getDescription() == null) {
             error += DESCRIPTION_VALIDATION_FAIL;
         }
-        int errorCode = validateMandatoryImage(product.getImage1());
-        switch (errorCode) {
-            case INVALID_MANDATORY_IMAGE:
-                error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "Principal");
-                break;
-            case EMPTY_MANDATORY_IMAGE:
-                error += EMPTY_MANDATORY_IMAGE_MSG;
-                break;
-        }
-        if (!validateImage(product.getImage2())) {
-            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "2");
-        }
-        if (!validateImage(product.getImage3())) {
-            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "3");
-        }
-        if (!validateImage(product.getImage4())) {
-            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "4");
-        }
-        if (!validateImage(product.getImage5())) {
-            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "5");
-        }
-        if (!validateImage(product.getImage6())) {
-            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "6");
+        if (product.getImages() == null || product.getImages().size() == 0) {
+            error += EMPTY_MANDATORY_IMAGE_MSG;
+        } else {
+            boolean mandatoryImage = true;
+            for (MultipartFile image : product.getImages()) {
+                if (mandatoryImage) {
+                    int errorCode = validateMandatoryImage(image);
+                    switch (errorCode) {
+                        case INVALID_MANDATORY_IMAGE:
+                            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "Principal");
+                            break;
+                        case EMPTY_MANDATORY_IMAGE:
+                            error += EMPTY_MANDATORY_IMAGE_MSG;
+                            break;
+                    }
+                    mandatoryImage = false;
+                } else {
+                    if (!validateImage(image)) {
+                        error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "2");
+                    }
+                }
+            }
         }
 
         if (error.length() != 0) {
@@ -76,7 +75,7 @@ public class ProductValidator {
         if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
             error += SKU_VALIDATION_FAIL;
         }
-        if (product.getTitle() == null) {
+        if (product.getTitles() == null) {
             error += TITLE_VALIDATION_FAIL;
         }
         if (product.getCost() == null || !validateCost(product.getCost())) {

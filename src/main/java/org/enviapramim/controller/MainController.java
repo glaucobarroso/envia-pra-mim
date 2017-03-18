@@ -10,11 +10,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -24,6 +27,16 @@ import java.util.List;
 @Controller
 @MultipartConfig(fileSizeThreshold=1024*1024, maxFileSize=1024*1024*5, maxRequestSize=1024*1024*5*5)
 public class MainController {
+
+    @GetMapping("/")
+    public String index(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "login";
+    }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public ResponseEntity delete(@RequestParam("sku") String sku) {
@@ -56,12 +69,15 @@ public class MainController {
     }
 
     @RequestMapping(value = "/mlauth", method = RequestMethod.GET)
-    public String mlauthcode(@RequestParam(value = "code", required = false) String code) {
+    public String mlauthcode(@RequestParam(value = "code", required = false) String code, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         if (code != null && code.length() > 0) {
             MercadoLibreService mercadoLibreService = new MercadoLibreService();
-            mercadoLibreService.authenticate(code);
+            mercadoLibreService.authenticate(code, username);
         }
-        return "mlLoginCallback";
+        model.addAttribute("name", "Login efetuado com sucesso!");
+        return "simpleCallback";
     }
 
     @RequestMapping(value = "/queryProduct")
@@ -110,13 +126,33 @@ public class MainController {
     }
 
     @GetMapping("/offerProduct")
-    public ResponseEntity listProduct() {
+    public String listProduct(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         StorageService storageService = new StorageService();
         MercadoLibreService mercadoLibreService = new MercadoLibreService();
         Product product = storageService.queryBySKU("teste");
-        UserMlData userMlData = storageService.queryUserMl("testUser");
-        String result = mercadoLibreService.offerProduct(product, userMlData.getMlAccessToken());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return new ResponseEntity(result, httpHeaders, HttpStatus.OK);
+        UserMlData userMlData = storageService.queryUserMl(username);
+        if (userMlData == null) {
+            return "redirect:/loginml";
+        }
+        if (mercadoLibreService.offerProduct(product, userMlData.getMlAccessToken()) == HttpStatus.OK.value()) {
+            SecurityContextHolder.clearContext();
+            return "redirect:/login";
+        }
+        model.addAttribute("name", "Produto anunciado com sucesso!");
+        return "simpleCallback";
     }
+
+    /*
+    private void authenticate() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        if (code != null && code.length() > 0) {
+            MercadoLibreService mercadoLibreService = new MercadoLibreService();
+            mercadoLibreService.authenticate(code, username);
+        }
+        model.addAttribute("name", "Login efetuado com sucesso!");
+        return "simpleCallback";
+    }*/
 }
