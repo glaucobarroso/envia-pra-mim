@@ -66,4 +66,49 @@
     </div>
 </div>
 
+<div th:fragment="pre-listing">
+
+    <!-- <img id="test-history-loading" src="../../img/loading.gif" alt="Loading..."
+         style="display: none; margin-left: auto; margin-right: auto"/> -->
+
+    <div th:if="${products} != null and !${#lists.isEmpty(products)}" id="pre-listing" class="table-responsive">
+
+        <table th:each="product : ${products}" class="table table-striped" id="pre-listing-table">
+
+            <thead>
+                <tr>
+                    <td><img th:src="${product.link1}" style="width:80px;height:80px;"/></td>
+                    <td th:text="${product.sku}" style="font-weight:bold;">SKU</td>
+                    <td th:text="${product.title}">Title</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="title : ${product.titles}">
+                    <td th:text="${title}">Title</td>
+                    <td>
+                        <label label-default="" class="radio">
+                            <input name="'radios-' + ${product.sku}" th:id="'radios0-' + ${product.sku}" value="0" checked="checked" type="radio"/>
+                            Cla&aacute;cio
+                        </label>
+                        <label label-default="" class="radio">
+                            <input name="'radios-' + ${product.sku}" th:id="'radios1-' + ${product.sku}" value="1" type="radio"/>
+                            Premium
+                        </label>
+                    </td>
+                    <td><label><input type="checkbox" />Frete gr&aacute;tis</label></td>
+                    <td><input th:id="'cost-' + ${product.sku}" th:value="${product.cost}" type="text" class="form-control" name="cost"/></td>
+                    <td><input th:id="'suggestedPrice-' + ${product.sku}" th:text="${product.suggestedPrice}" type="text" class="form-control" name="suggestedPrice"/></td>
+                    <td><input th:id="'price-' + ${product.sku}" th:text="${product.price}" type="text" class="form-control" name="price"/></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+    <div th:unless="${products} != null and !${#lists.isEmpty(products)}">
+        Nenhum produto foi encontrado
+    </div>
+
+</div>
+
 </html>
