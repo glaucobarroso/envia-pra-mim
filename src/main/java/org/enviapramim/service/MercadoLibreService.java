@@ -61,7 +61,7 @@ public class MercadoLibreService {
 
     private String convertProductToItemJson(Product product) {
         Item item = new Item();
-        item.title = "Mochila " + product.getTitle() + "6";
+        item.title = product.getTitle();
         item.available_quantity = 1;
         item.price = 1000.90f;
         //item.category_id = "MLB3530";

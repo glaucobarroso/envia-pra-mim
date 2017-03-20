@@ -6,6 +6,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        #products-table > table > tbody > tr.active td {
+            background-color:#D0D0D0;
+        }
+    </style>
 </head>
 <body>
 
@@ -17,47 +22,71 @@
 </body>
 <script>
 
-        function deleteNow(sku) {
-            var btId = '#delete_' + sku;
-            var tr = $(btId).parent().parent();
-            $.ajax({
-                url: "/delete",
-                data: {"sku": sku},
-                success: function(response) {
-                    alert("Produto deletado com Sucesso!");
-                    tr.fadeOut(1000,function(){
-                        tr.remove();
-                    });
-                },
-                error: function(xhr) {
-                    alert("Erro ao deletar!");
-                }
-            });
+    $('#products-table-content').on('click', '.clickable-row', function(event) {
+
+        if ($(this).hasClass( 'active' )) {
+            $(this).removeClass('active');
+        } else {
+            $(this).addClass('active');
         }
 
-        function updateNow(sku) {
-            var updateData = "sku=" + sku;
-            var titleId = '#title_' + sku;
-            updateData = updateData.concat("&amp;title=", $(titleId).val());
-            var descriptionId = '#description_' + sku;
-            updateData = updateData.concat('&amp;description=', $(descriptionId).val());
-            var costId = '#cost_' + sku;
-            updateData = updateData.concat('&amp;cost=', $(costId).val());
-            var quantityId = '#quantity_' + sku;
-            updateData = updateData.concat('&amp;quantity=', $(quantityId).val());
-            updateData = updateData.replace(/amp;/g, '');
-            $.ajax({
-                url: "/update",
-                data: updateData,
-                method: "post",
-                success: function(response) {
-                    alert("Produto alterado com Sucesso!");
-                },
-                error: function(xhr) {
-                    alert("Erro ao alterar produto!");
-                }
-            });
-        }
+    });
+
+    function selectAll(checkAll) {
+        $('#products-table-content > tbody  > tr').each(function() {
+            if (checkAll) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        });
+    }
+
+    $('#select-all').change(function() {
+        selectAll($(this).is(":checked"));
+    });
+
+    function deleteNow(sku) {
+        var btId = '#delete_' + sku;
+        var tr = $(btId).parent().parent();
+        $.ajax({
+            url: "/delete",
+            data: {"sku": sku},
+            success: function(response) {
+                alert("Produto deletado com Sucesso!");
+                tr.fadeOut(1000,function(){
+                    tr.remove();
+                });
+            },
+            error: function(xhr) {
+                alert("Erro ao deletar!");
+            }
+        });
+    }
+
+    function updateNow(sku) {
+        var updateData = "sku=" + sku;
+        var titleId = '#title_' + sku;
+        updateData = updateData.concat("&amp;title=", $(titleId).val());
+        var descriptionId = '#description_' + sku;
+        updateData = updateData.concat('&amp;description=', $(descriptionId).val());
+        var costId = '#cost_' + sku;
+        updateData = updateData.concat('&amp;cost=', $(costId).val());
+        var quantityId = '#quantity_' + sku;
+        updateData = updateData.concat('&amp;quantity=', $(quantityId).val());
+        updateData = updateData.replace(/amp;/g, '');
+        $.ajax({
+            url: "/update",
+            data: updateData,
+            method: "post",
+            success: function(response) {
+                alert("Produto alterado com Sucesso!");
+            },
+            error: function(xhr) {
+                alert("Erro ao alterar produto!");
+            }
+        });
+    }
 
 </script>
 </html>
