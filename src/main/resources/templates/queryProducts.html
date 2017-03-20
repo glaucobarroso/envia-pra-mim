@@ -17,20 +17,43 @@
 <div th:include="../fragments/common::header"></div>
 <div class="container">
     <div th:include="../fragments/tables :: products" id="products"></div>
+    <button class="btn btn-primary" id="list-selected" onclick="listSelected();">Anunciar Selecionados</button>
 </div>
 
 </body>
-<script>
+<script th:inline="javascript">
+
+    var products = [[${products}]];
 
     $('#products-table-content').on('click', '.clickable-row', function(event) {
 
-        if ($(this).hasClass( 'active' )) {
+        if ($(this).hasClass('active')) {
             $(this).removeClass('active');
         } else {
             $(this).addClass('active');
         }
 
     });
+
+    function listSelected() {
+        var i = 0;
+        var added = 0;
+        var skuArray = "?";
+        $('#products-table-content > tbody  > tr').each(function() {
+            if ($(this).hasClass('active')) {
+                var parameter = "&amp;skus[]=";
+                parameter += products[i].sku;
+                skuArray += parameter;
+                added++;
+            }
+            i++;
+        });
+        if (added != 0) {
+            var href = "/listProducts" + skuArray;
+            href = href.replace(/amp;/g, '');
+            window.location.href = href;
+        }
+    }
 
     function selectAll(checkAll) {
         $('#products-table-content > tbody  > tr').each(function() {
@@ -51,7 +74,7 @@
         var tr = $(btId).parent().parent();
         $.ajax({
             url: "/delete",
-            data: {"sku": sku},
+            data: {sku: sku},
             success: function(response) {
                 alert("Produto deletado com Sucesso!");
                 tr.fadeOut(1000,function(){

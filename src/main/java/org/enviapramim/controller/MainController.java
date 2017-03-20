@@ -144,15 +144,15 @@ public class MainController {
         return "simpleCallback";
     }
 
-    /*
-    private void authenticate() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        if (code != null && code.length() > 0) {
-            MercadoLibreService mercadoLibreService = new MercadoLibreService();
-            mercadoLibreService.authenticate(code, username);
+    @RequestMapping(value = "/listProducts", method = RequestMethod.GET)
+    public String listProducts(@RequestParam(value="skus[]") String[] skus, Model model) {
+        if (skus != null) {
+            for (String sku : skus) {
+                System.out.println(sku);
+            }
         }
-        model.addAttribute("name", "Login efetuado com sucesso!");
+        model.addAttribute("name", "It is working!");
         return "simpleCallback";
-    }*/
+    }
+
 }
