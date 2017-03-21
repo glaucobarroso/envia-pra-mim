@@ -1,7 +1,9 @@
 package org.enviapramim.controller;
 
+import org.enviapramim.Utils.Utils;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
+import org.enviapramim.model.ml.ItemResponse;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.repository.UserMlData;
 import org.enviapramim.service.MercadoLibreService;
@@ -17,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -131,15 +132,18 @@ public class MainController {
         String username = auth.getName();
         StorageService storageService = new StorageService();
         MercadoLibreService mercadoLibreService = new MercadoLibreService();
-        Product product = storageService.queryBySKU("teste");
+        Product product = storageService.queryBySKU("teste12");
         UserMlData userMlData = storageService.queryUserMl(username);
         if (userMlData == null) {
             return "redirect:/loginml";
         }
-        if (mercadoLibreService.offerProduct(product, userMlData.getMlAccessToken()) == HttpStatus.OK.value()) {
+        ItemResponse item = mercadoLibreService.offerProduct(product, userMlData.getMlAccessToken());
+        if (item == null) {
             SecurityContextHolder.clearContext();
             return "redirect:/login";
         }
+        Utils utils = new Utils();
+        mercadoLibreService.updateHtmlDescription(utils.createHtmlDescription(product), item.id, userMlData.getMlAccessToken());
         model.addAttribute("name", "Produto anunciado com sucesso!");
         return "simpleCallback";
     }

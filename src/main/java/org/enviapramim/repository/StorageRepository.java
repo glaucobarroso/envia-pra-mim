@@ -153,7 +153,8 @@ public class StorageRepository {
         product.setTitle(productStorageModel.getTitle());
         product.setTitles(productStorageModel.getTitles());
         product.setQuantity(productStorageModel.getQuantity());
-        product.setLink1(productStorageModel.getThumbNailLink());
+        product.setThumbnail(productStorageModel.getThumbNailLink());
+        product.setLinks(productStorageModel.getLinks());
         return product;
     }
 }
