@@ -150,13 +150,9 @@ public class MainController {
 
     @RequestMapping(value = "/listProducts", method = RequestMethod.GET)
     public String listProducts(@RequestParam(value="skus[]") String[] skus, Model model) {
-        if (skus != null) {
-            for (String sku : skus) {
-                System.out.println(sku);
-            }
-        }
-        model.addAttribute("name", "It is working!");
-        return "simpleCallback";
+        StorageService storageService = new StorageService();
+        model.addAttribute("products", storageService.queryProducts(skus));
+        return "preListing";
     }
 
 }

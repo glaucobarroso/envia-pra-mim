@@ -29,7 +29,7 @@ public class StorageRepository {
         imageTransformer = new ImageTransformer();
     }
 
-    public Product storeProduct(Product product) {
+    public ProductStorageModel storeProduct(Product product) {
         ProductStorageModel productStorageModel = convertToProductStorage(product);
 
         // generating thumbnail for the main image
@@ -47,7 +47,7 @@ public class StorageRepository {
         productStorageModel.setLinks(linksList);
 
         ProductStorageModel retProd = entityManager.insert(productStorageModel);
-        return convertFromProductStorage(retProd);
+        return retProd;
     }
 
     public void deleteProduct(String sku) {
@@ -94,20 +94,16 @@ public class StorageRepository {
         return sku + number + "." + fileExt;
     }
 
-    public List<Product> queryAllProducts() {
+    public List<ProductStorageModel> queryAllProducts() {
         EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM storage");
         QueryResponse<ProductStorageModel> response = entityManager.executeEntityQueryRequest(ProductStorageModel.class, request);
         List<ProductStorageModel> productStorageList = response.getResults();
-        List<Product> productList = new ArrayList<Product>();
-        for (ProductStorageModel productStorageModel : productStorageList) {
-            productList.add(convertFromProductStorage(productStorageModel));
-        }
-        return productList;
+        return productStorageList;
     }
 
-    public Product queryBySKU(String sku) {
+    public ProductStorageModel queryBySKU(String sku) {
         ProductStorageModel productStorage = entityManager.load(ProductStorageModel.class, sku);
-        return convertFromProductStorage(productStorage);
+        return productStorage;
     }
 
     public UserMlData queryUserMl(String username) {
@@ -134,27 +130,4 @@ public class StorageRepository {
         entityManager.deleteAll(UserMlData.class);
     }
 
-    private ProductStorageModel convertToProductStorage(Product product) {
-        ProductStorageModel productStorageModel = new ProductStorageModel();
-        productStorageModel.setSku(product.getSku());
-        productStorageModel.setCost(product.getCost());
-        productStorageModel.setDescription(product.getDescription());
-        productStorageModel.setTitle(product.getTitle());
-        productStorageModel.setTitles(product.getTitles());
-        productStorageModel.setQuantity(product.getQuantity());
-        return productStorageModel;
-    }
-
-    private Product convertFromProductStorage(ProductStorageModel productStorageModel) {
-        Product product = new Product();
-        product.setSku(productStorageModel.getSku());
-        product.setCost(productStorageModel.getCost());
-        product.setDescription(productStorageModel.getDescription());
-        product.setTitle(productStorageModel.getTitle());
-        product.setTitles(productStorageModel.getTitles());
-        product.setQuantity(productStorageModel.getQuantity());
-        product.setThumbnail(productStorageModel.getThumbNailLink());
-        product.setLinks(productStorageModel.getLinks());
-        return product;
-    }
 }

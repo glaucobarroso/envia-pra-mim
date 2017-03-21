@@ -1,9 +1,13 @@
 package org.enviapramim.service;
 
+import org.enviapramim.model.PreListing;
 import org.enviapramim.model.Product;
+import org.enviapramim.repository.ProductStorageModel;
 import org.enviapramim.repository.StorageRepository;
 import org.enviapramim.repository.UserMlData;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,15 +21,32 @@ public class StorageService {
         storageRepository = new StorageRepository();
     }
     public Product storeProduct(Product product) {
-        return storageRepository.storeProduct(product);
+        return convertToProduct(storageRepository.storeProduct(product));
     }
 
     public List<Product> queryAllProducts() {
-        return storageRepository.queryAllProducts();
+        List<ProductStorageModel> productStorageList = storageRepository.queryAllProducts();
+        List<Product> productList = new ArrayList<Product>();
+        for (ProductStorageModel productStorageModel : productStorageList) {
+            productList.add(convertToProduct(productStorageModel));
+        }
+        return productList;
+    }
+
+    public List<PreListing> queryProducts(String[] skus) {
+        List<String> skusList = Arrays.asList(skus);
+        List<ProductStorageModel> productStorageList = storageRepository.queryAllProducts();
+        List<PreListing> preListing = new ArrayList<PreListing>();
+        for (ProductStorageModel product : productStorageList) {
+            if (skusList.contains(product.getSku())) {
+                preListing.add(convertToPreListing(product));
+            }
+        }
+        return preListing;
     }
 
     public Product queryBySKU(String sku) {
-        return storageRepository.queryBySKU(sku);
+        return convertToProduct(storageRepository.queryBySKU(sku));
     }
 
     public void deleteProduct(String sku) {
@@ -54,6 +75,30 @@ public class StorageService {
 
     public void deleteAllUserInfo() {
         storageRepository.deleteAllUserInfo();
+    }
+
+    private Product convertToProduct(ProductStorageModel productStorageModel) {
+        Product product = new Product();
+        product.setSku(productStorageModel.getSku());
+        product.setCost(productStorageModel.getCost());
+        product.setDescription(productStorageModel.getDescription());
+        product.setTitle(productStorageModel.getTitle());
+        product.setTitles(productStorageModel.getTitles());
+        product.setQuantity(productStorageModel.getQuantity());
+        product.setLink1(productStorageModel.getThumbNailLink());
+        return product;
+    }
+
+    private PreListing convertToPreListing(ProductStorageModel productStorageModel) {
+        PricingService pricingService = new PricingService();
+        PreListing preListingInfo = new PreListing();
+        preListingInfo.sku = productStorageModel.getSku();
+        preListingInfo.cost = productStorageModel.getCost();
+        preListingInfo.thumbnail = productStorageModel.getThumbNailLink();
+        preListingInfo.titles = productStorageModel.getTitles();
+        preListingInfo.title = productStorageModel.getTitle();
+        preListingInfo.suggestedPrice = pricingService.getSuggestedPrice(productStorageModel.getCost());
+        return preListingInfo;
     }
 }
 
