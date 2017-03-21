@@ -21,7 +21,7 @@
             </thead>
             <tbody>
                 <tr class="clickable-row" th:each="product : ${products}">
-                    <td><img th:src="${product.link1}" style="width:80px;height:80px;"/></td>
+                    <td><img th:src="${product.thumbnail}" style="width:80px;height:80px;"/></td>
                     <td th:text="${product.sku}" style="font-weight:bold;">SKU</td>
                     <td><input th:id="'title_' + ${product.sku}" th:value="${product.title}" type="text" class="form-control" name="title"/></td>
                     <td><input th:id="'description_' + ${product.sku}" th:value="${product.description}" type="text" class="form-control" name="description"/></td>
@@ -77,8 +77,8 @@
             <table class="table table-striped">
                 <tr style="background-color:#D0D0D0;">
                     <td><img th:src="${product.thumbnail}" style="width:80px;height:80px;"/></td>
-                    <td th:text="${product.sku}" style="font-weight:bold;">SKU</td>
-                    <td th:text="${product.title}">Title</td>
+                    <td th:text="${product.sku}" style="font-weight:bold;padding-top:30px;">SKU</td>
+                    <td th:text="${product.title}" style="padding-top:30px;">Title</td>
                 </tr>
             </table>
             <table class="table table-striped">
@@ -93,22 +93,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="title : ${product.titles}">
-                        <td th:text="${title}">Title</td>
+                    <tr th:each="title,iter : ${product.titles}">
+                        <td th:text="${title}" style="padding-top:30px;">Title</td>
                         <td>
                             <label label-default="" class="radio">
-                                <input name="'radios-' + ${product.sku}" value="0" checked="checked" type="radio"/>
+                                <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="0" checked="checked" type="radio"/>
                                 Cl&aacute;ssico
                             </label>
                             <label label-default="" class="radio">
-                                <input name="'radios-' + ${product.sku}" value="1" type="radio"/>
+                                <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="1" type="radio"/>
                                 Premium
                             </label>
                         </td>
-                        <td><label><input type="checkbox"/>Frete gr&aacute;tis</label></td>
-                        <td><input th:id="'cost-' + ${product.sku}" th:value="${product.cost}" type="text" class="form-control" name="cost"/></td>
-                        <td th:text="${product.suggestedPrice}">SUG_PRICE</td>
-                        <td><input th:id="'price-' + ${product.sku}" type="text" class="form-control" name="price"/></td>
+                        <td style="padding-top:30px;"><label><input type="checkbox" class="free-shipping" th:id="'freeshipping-' + ${product.sku} + '-' + ${iter.index}" th:onclick="'freeShipping(\'' + ${product.sku} + '\',\'' + ${product.freeShipping} + '\',\'' + ${iter.index} + '\');'"/> Frete gr&aacute;tis</label></td>
+                        <td th:text="${product.cost}" style="padding-top:30px;">COST</td>
+                        <td th:text="${product.suggestedPrice}" th:id="'sprice-' + ${product.sku} + '-' + ${iter.index}" type="text" style="padding-top:30px;">SUG_PRICE</td>
+                        <td style="padding-top:30px;"><input th:id="'price-' + ${product.sku} + '-' +  ${iter.index}" type="text" class="form-control" name="price"/></td>
                     </tr>
                 </tbody>
             </table>

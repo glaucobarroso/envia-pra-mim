@@ -85,7 +85,7 @@ public class StorageService {
         product.setTitle(productStorageModel.getTitle());
         product.setTitles(productStorageModel.getTitles());
         product.setQuantity(productStorageModel.getQuantity());
-        product.setLink1(productStorageModel.getThumbNailLink());
+        product.setThumbnail(productStorageModel.getThumbNailLink());
         return product;
     }
 
@@ -98,6 +98,7 @@ public class StorageService {
         preListingInfo.titles = productStorageModel.getTitles();
         preListingInfo.title = productStorageModel.getTitle();
         preListingInfo.suggestedPrice = pricingService.getSuggestedPrice(productStorageModel.getCost());
+        preListingInfo.freeShipping = pricingService.getFreeShippingPrice("NONE");
         return preListingInfo;
     }
 }

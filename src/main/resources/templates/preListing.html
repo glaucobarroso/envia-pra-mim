@@ -16,5 +16,24 @@
 
 </body>
 <script th:inline="javascript">
+    function freeShipping(sku, freeShippingStr, index) {
+        var freeShippingCheckBox = "#freeshipping-" + sku + "-" + index;
+        var isFreeShipping = $(freeShippingCheckBox).is(":checked");
+        var suggestedPriceId = "#sprice-" + sku + "-" + index;
+        var sugPriceStr = $(suggestedPriceId).html();
+        var sugPriceF = parseFloat(sugPriceStr);
+        var freeShippingF = parseFloat(freeShippingStr);
+        if (isFreeShipping) {
+            sugPriceF += freeShippingF;
+        } else {
+            sugPriceF -= freeShippingF;
+        }
+        sugPriceF = Number(sugPriceF.toFixed(2));
+        $(suggestedPriceId).html(sugPriceF);
+    }
+
+    /*$('#mytable td').each(function() {
+        var cellText = $(this).html();
+    });*/
 </script>
 </html>

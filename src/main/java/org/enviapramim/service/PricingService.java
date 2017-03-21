@@ -10,4 +10,9 @@ public class PricingService {
     public String getSuggestedPrice(String cost) {
         return String.format("%.2f", Float.parseFloat(cost) * MARGIN_FACTOR);
     }
+
+    public String getFreeShippingPrice(String category) {
+        float shippingCost = 20.90f;
+        return String.format("%.2f", shippingCost);
+    }
 }

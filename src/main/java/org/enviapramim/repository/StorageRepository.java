@@ -130,4 +130,15 @@ public class StorageRepository {
         entityManager.deleteAll(UserMlData.class);
     }
 
+    private ProductStorageModel convertToProductStorage(Product product) {
+        ProductStorageModel productStorageModel = new ProductStorageModel();
+        productStorageModel.setSku(product.getSku());
+        productStorageModel.setCost(product.getCost());
+        productStorageModel.setDescription(product.getDescription());
+        productStorageModel.setTitle(product.getTitle());
+        productStorageModel.setTitles(product.getTitles());
+        productStorageModel.setQuantity(product.getQuantity());
+        return productStorageModel;
+    }
+
 }
