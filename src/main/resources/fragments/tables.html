@@ -81,7 +81,7 @@
                     <td th:text="${product.title}" style="padding-top:30px;">Title</td>
                 </tr>
             </table>
-            <table class="table table-striped">
+            <table class="table table-striped content-table">
                 <thead>
                     <tr>
                         <th>T&iacute;tulo</th>
@@ -93,9 +93,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="title,iter : ${product.titles}">
-                        <td th:text="${title}" style="padding-top:30px;">Title</td>
-                        <td>
+                    <tr th:id="${product.sku}" class="item" th:each="title,iter : ${product.titles}">
+                        <td style="padding-top:30px;"><input th:id="'title_' + ${product.sku} + '-' + ${iter.index}" th:value="${title}" type="text" class="form-control title"/></td>
+                        <td style="padding-left:30px;">
                             <label label-default="" class="radio">
                                 <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="0" checked="checked" type="radio"/>
                                 Cl&aacute;ssico
@@ -105,10 +105,10 @@
                                 Premium
                             </label>
                         </td>
-                        <td style="padding-top:30px;"><label><input type="checkbox" class="free-shipping" th:id="'freeshipping-' + ${product.sku} + '-' + ${iter.index}" th:onclick="'freeShipping(\'' + ${product.sku} + '\',\'' + ${product.freeShipping} + '\',\'' + ${iter.index} + '\');'"/> Frete gr&aacute;tis</label></td>
+                        <td class="freeshipping-cb" style="padding-top:30px;"><label><input type="checkbox" class="free-shipping" th:id="'freeshipping-' + ${product.sku} + '-' + ${iter.index}" th:onclick="'freeShipping(\'' + ${product.sku} + '\',\'' + ${product.freeShipping} + '\',\'' + ${iter.index} + '\');'"/> Frete gr&aacute;tis</label></td>
                         <td th:text="${product.cost}" style="padding-top:30px;">COST</td>
                         <td th:text="${product.suggestedPrice}" th:id="'sprice-' + ${product.sku} + '-' + ${iter.index}" type="text" style="padding-top:30px;">SUG_PRICE</td>
-                        <td style="padding-top:30px;"><input th:id="'price-' + ${product.sku} + '-' +  ${iter.index}" type="text" class="form-control" name="price"/></td>
+                        <td class="price" style="padding-top:30px;"><input th:id="'price-' + ${product.sku} + '-' +  ${iter.index}" type="text" class="form-control" name="price"/></td>
                     </tr>
                 </tbody>
             </table>

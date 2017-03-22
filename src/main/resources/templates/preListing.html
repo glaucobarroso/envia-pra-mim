@@ -12,10 +12,14 @@
 <div th:include="../fragments/common::header"></div>
 <div class="container">
     <div th:include="../fragments/tables :: pre-listing"></div>
+    <button class="btn btn-primary" id="list-selected" onclick="listProducts();">Anunciar</button>
 </div>
 
 </body>
 <script th:inline="javascript">
+
+    var products = [[${products}]];
+
     function freeShipping(sku, freeShippingStr, index) {
         var freeShippingCheckBox = "#freeshipping-" + sku + "-" + index;
         var isFreeShipping = $(freeShippingCheckBox).is(":checked");
@@ -32,8 +36,31 @@
         $(suggestedPriceId).html(sugPriceF);
     }
 
-    /*$('#mytable td').each(function() {
-        var cellText = $(this).html();
-    });*/
+    function listProducts() {
+        /*var productsToList = [];
+        for (var i = 0; products.length > i; i++) {
+            var productInfo = {};
+            productInfo.sku = products[i].sku;
+            prinfoInfo.info = [];
+            for (var j = 0; products.titles.length > j; j++) {
+                var info = {};
+                th:id="'title_' + ${product.sku} + '-' + ${iter.index}"
+                var titleId = "#title_" + products[i].sku + "-" + j;
+                var radioName = "#radio_" + products[i].sku + "-" + j;
+                productInfo.titles = [];
+            }
+        }*/
+
+
+        $("tr.item").each(function() {
+            var title = $(this).find("input.title").val();
+            console.log(title);
+        });
+
+        /*$('.content-table td').each(function() {
+           $(this).
+        });*/
+    }
+
 </script>
 </html>
