@@ -157,7 +157,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
-    public String listProducts2(ProductsToList productsToList, BindingResult result, Model model) {
+    public String listProducts2(@RequestBody ProductsToList productsToList, BindingResult result, Model model) {
         model.addAttribute("name", "Produtos anunciados com sucesso!");
         return "simpleCallback";
     }

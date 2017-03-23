@@ -74,6 +74,8 @@
         $.ajax({
             url: "/listProducts2",
             data: jsonData,
+            contentType: "application/json",
+            dataType: 'json',
             method: "post",
             success: function(response) {
                 alert("Produtos anunciados com Sucesso!");
