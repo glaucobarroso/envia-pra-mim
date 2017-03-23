@@ -31,7 +31,7 @@ public class ProductValidator {
         if (product.getTitles() == null) {
             error += TITLE_VALIDATION_FAIL;
         }
-        if (product.getCost() == null || !validateCost(product.getCost())) {
+        if (product.getCost() == null || !validateCost(product)) {
             error += COST_VALIDATION_FAIL;
         }
         if (product.getQuantity() == null || !validateQuantity(product.getQuantity())) {
@@ -78,7 +78,7 @@ public class ProductValidator {
         if (product.getTitles() == null) {
             error += TITLE_VALIDATION_FAIL;
         }
-        if (product.getCost() == null || !validateCost(product.getCost())) {
+        if (product.getCost() == null || !validateCost(product)) {
             error += COST_VALIDATION_FAIL;
         }
         if (product.getQuantity() == null || !validateQuantity(product.getQuantity())) {
@@ -94,9 +94,10 @@ public class ProductValidator {
         return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
     }
 
-    private boolean validateCost(String cost) {
+    private boolean validateCost(Product product) {
         try {
-            Float.parseFloat(cost);
+            product.setCost(product.getCost().replaceAll(",", "."));
+            Float.parseFloat(product.getCost());
         } catch (Exception e) {
             return false;
         }

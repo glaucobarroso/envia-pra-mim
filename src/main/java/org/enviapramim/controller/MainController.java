@@ -3,6 +3,7 @@ package org.enviapramim.controller;
 import org.enviapramim.Utils.Utils;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
+import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.ItemResponse;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.repository.UserMlData;
@@ -153,6 +154,12 @@ public class MainController {
         StorageService storageService = new StorageService();
         model.addAttribute("products", storageService.queryProducts(skus));
         return "preListing";
+    }
+
+    @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
+    public String listProducts2(ProductsToList productsToList, BindingResult result, Model model) {
+        model.addAttribute("name", "Produtos anunciados com sucesso!");
+        return "simpleCallback";
     }
 
 }

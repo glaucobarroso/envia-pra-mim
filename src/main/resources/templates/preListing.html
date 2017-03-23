@@ -19,6 +19,7 @@
 <script th:inline="javascript">
 
     var products = [[${products}]];
+    var productsToList = [];
 
     function freeShipping(sku, freeShippingStr, index) {
         var freeShippingCheckBox = "#freeshipping-" + sku + "-" + index;
@@ -51,15 +52,36 @@
             }
         }*/
 
-
+        productsToList = [];
         $("tr.item").each(function() {
-            var title = $(this).find("input.title").val();
-            console.log(title);
+            var productInfo = {};
+            productInfo.sku = $(this).attr("id");
+            productInfo.title = $(this).find("input.title").val();
+            productInfo.price = $(this).find("input.price").val();
+            productInfo.freeShipping = $(this).find("input.freeshipping-cb").is(':checked');
+            productInfo.type = $(this).find("input.type:checked").val();
+            productsToList[productsToList.length] = productInfo;
+            console.log("******************************");
+            console.log(productInfo.sku);
+            console.log(productInfo.title);
+            console.log(productInfo.price);
+            console.log(productInfo.type);
+            console.log("******************************");
         });
-
-        /*$('.content-table td').each(function() {
-           $(this).
-        });*/
+        var finalObj = {};
+        finalObj.productsToList = productsToList;
+        var jsonData = JSON.stringify(finalObj);
+        $.ajax({
+            url: "/listProducts2",
+            data: jsonData,
+            method: "post",
+            success: function(response) {
+                alert("Produtos anunciados com Sucesso!");
+            },
+            error: function(xhr) {
+                alert("Erro ao anunciar produtos!");
+            }
+        });
     }
 
 </script>

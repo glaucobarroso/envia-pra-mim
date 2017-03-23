@@ -93,7 +93,7 @@ public class StorageService {
         PricingService pricingService = new PricingService();
         PreListing preListingInfo = new PreListing();
         preListingInfo.sku = productStorageModel.getSku();
-        preListingInfo.cost = productStorageModel.getCost();
+        preListingInfo.cost = pricingService.formatPrice(productStorageModel.getCost());
         preListingInfo.thumbnail = productStorageModel.getThumbNailLink();
         preListingInfo.titles = productStorageModel.getTitles();
         preListingInfo.title = productStorageModel.getTitle();
