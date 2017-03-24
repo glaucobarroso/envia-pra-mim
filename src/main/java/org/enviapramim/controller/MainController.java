@@ -3,6 +3,7 @@ package org.enviapramim.controller;
 import org.enviapramim.Utils.Utils;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
+import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.ItemResponse;
 import org.enviapramim.model.validators.ProductValidator;
@@ -127,8 +128,7 @@ public class MainController {
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
 
-    @GetMapping("/offerProduct")
-    public String listProduct(Model model) {
+    public String offerProduct(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         StorageService storageService = new StorageService();
@@ -158,8 +158,34 @@ public class MainController {
 
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
     public String listProducts2(@RequestBody ProductsToList productsToList, BindingResult result, Model model) {
-        model.addAttribute("name", "Produtos anunciados com sucesso!");
-        return "simpleCallback";
+        StorageService storageService = new StorageService();
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
+        List<Product> productDetailsList = storageService.queryAllProducts();
+        Product currProductDetails;
+        if (productsToList.getProductsToList() != && productsToList.getProductsToList().size() > 0) {
+            for (ProductToList product : productsToList.getProductsToList()) {
+                // find product details
+                if (currProductDetails == null || !currProductDetails.getSku().equals(product.getSku())) {
+                    for (Product productDetails : productDetailsList) {
+                        if (productDetails.getSku().equals(product.getSku())) {
+                            currProductDetails = productDetails;
+                            break;
+                        }
+                    }
+                }
+
+                if (product.getTitle() != null && product.getTitle().length() > 0 &&
+                        product.getPrice() != null && product.getPrice().length() > 0) {
+                    offerProduct(currProductDetails, product, mercadoLibreService, storageService);
+                }
+            }
+
+
+        }
+    }
+
+    private ItemResponse offerProduct(Product productDetails, ProductToList productToList,
+                                      MercadoLibreService mercadoLibreService, StorageService storageService) {
     }
 
 }
