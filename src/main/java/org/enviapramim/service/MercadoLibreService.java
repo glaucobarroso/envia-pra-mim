@@ -8,11 +8,11 @@ import com.mercadolibre.sdk.Meli;
 import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.enviapramim.model.Product;
-import org.enviapramim.model.ml.Description;
-import org.enviapramim.model.ml.Item;
-import org.enviapramim.model.ml.ItemResponse;
-import org.enviapramim.model.ml.Shipping;
+import org.enviapramim.model.ProductToList;
+import org.enviapramim.model.ProductsToList;
+import org.enviapramim.model.ml.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +27,10 @@ public class MercadoLibreService {
     private static final Long APP_ID = 7164282521643532L;
     private static String APP_SECRET = "Fa4Zcl3Kp41nvNGcyKmFf9jB5Fch1cf3";
     private static final String AUTH_CALLBACK = "https://localhost:8443/mlauth";
+    private static final String WARRANTY = "90 dias para defeitos de fabricação";
+    private String DESCRIPTION_PREFFIX_FORMAT_STR = "<p style=\"text-align: center;\"><span style=\"font-family: helvetica; font-size: xx-large;\">%s<br /></span></p><hr /><div><br /><div style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff; text-align: center; font-size: x-large;\"><img src=\"%s\" /></div><p style=\"margin: 0.5em 0px; padding: 0px; border: 3px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\"><span style=\"font-family: helvetica; font-size: x-large;\"><strong><span style=\"margin: 0px; padding: 0px; border: 0px none; outline: 0px none; vertical-align: baseline; box-sizing: content-box;\">Detalhes do produto</span></strong></span></p><hr/><div style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\"><span face=\"arial, helvetica, sans-serif\" size=\"4\" style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-family: arial, helvetica, sans-serif; font-size: large;\"><span face=\"arial, helvetica, sans-serif\" size=\"4\" style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-family: arial, helvetica, sans-serif; font-size: large;\"></span></span><ul style=\"margin: 1em 0px; padding: 0px 0px 0px 40px; border: 0px; outline: 0px; vertical-align: baseline; list-style: disc inside; box-sizing: content-box; display: block;\">";
+    private String DESCRIPTION_LINE_FORMAT_STR = "<li style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; display: list-item;\"><span style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-size: large; font-family: arial, helvetica, sans-serif;\">%s</span></li>";
+    private String DESCRIPTION_SUFFIX = "</div></div>";
 
     public MercadoLibreService() {
         meli = new Meli(APP_ID, APP_SECRET);
@@ -48,11 +52,11 @@ public class MercadoLibreService {
         return true;
     }
 
-    public ItemResponse offerProduct(Product product, String accessToken) {
+    public ItemResponse offerProduct(ListingInfo info, String accessToken) {
         try {
             FluentStringsMap params = new FluentStringsMap();
             params.add("access_token", accessToken);
-            Response response = meli.post("/items", params, convertProductToItemJson(product));
+            Response response = meli.post("/items", params, convertProductToItemJson(info));
             String body = response.getResponseBody();
             Gson gson = new Gson();
             return gson.fromJson(body, ItemResponse.class);
@@ -91,23 +95,25 @@ public class MercadoLibreService {
         return -1;
     }
 
-    private String convertProductToItemJson(Product product) {
+    private String convertProductToItemJson(ListingInfo info) {
         Item item = new Item();
-        item.title = product.getTitle();
-        item.available_quantity = 1;
-        item.price = 1000.90f;
+        item.title = info.title;
+        item.available_quantity = info.quantity;
+        item.price = info.price;
         //item.category_id = "MLB3530";
-        item.category_id = "MLB202885";
+        //item.category_id = "MLB202885";
+        item.category_id = info.category;
         item.currency_id = "BRL";
         item.buying_mode = "buy_it_now";
-        item.listing_type_id = "gold_special";
+        //item.listing_type_id = "gold_special";
+        item.listing_type_id = info.type;
         item.condition = "new";
 //        item.description = product.getDescription();
         item.accepts_mercadopago = true;
-        item.warranty = "90 dias";
+        item.warranty = WARRANTY;
 
         List<Item.Picture> pictureList = new ArrayList<Item.Picture>();
-        for (String link : product.getLinks()) {
+        for (String link : info.pictureLinks) {
             Item.Picture picture = item.new Picture();
             picture.source = link;
             pictureList.add(picture);
@@ -117,7 +123,17 @@ public class MercadoLibreService {
         Shipping shipping = new Shipping();
         shipping.mode = "me2";
         shipping.localPickUp = false;
-        shipping.freeShipping = false;
+        shipping.free_shipping = info.freeShipping;
+        if (shipping.free_shipping) {
+            FreeShipping freeShipping = new FreeShipping();
+            freeShipping.id = 100009;
+            FreeShipping.Rule rule = freeShipping.new Rule();
+            rule.free_mode = "country";
+            rule.value = null;
+            freeShipping.rule = rule;
+            shipping.free_methods = new ArrayList<FreeShipping>();
+            shipping.free_methods.add(freeShipping);
+        }
         shipping.methods = null;
         shipping.dimensions = null;
         shipping.tags = new ArrayList<Object>();
@@ -134,5 +150,39 @@ public class MercadoLibreService {
 
         return jsonString;
     }
-}
 
+    public ListingInfo createListingInfo(Product productDb, ProductToList productWeb) {
+        ListingInfo info = new ListingInfo();
+        info.title = productWeb.title;
+        /********************************************************
+         *
+         *
+         *
+         * TODO Change hardcoded category
+         *
+         *
+         */
+        info.category = "MLB202885";
+        info.pictureLinks = productDb.getLinks();
+        info.price = Float.parseFloat(productWeb.price);
+        // TODO change hardcoded quantity
+        info.quantity = 1000;
+        info.type = productWeb.type;
+        info.description = productDb.getDescription();
+        info.freeShipping = productWeb.freeShipping;
+        return info;
+    }
+
+    public String createHtmlDescription(ListingInfo info) {
+        String htmlDescription = StringEscapeUtils.escapeHtml3(info.description);
+        String[] lines = htmlDescription.split("\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(String.format(DESCRIPTION_PREFFIX_FORMAT_STR, StringEscapeUtils.escapeHtml3(info.title), info.pictureLinks.get(0)));
+        for (String line : lines) {
+            stringBuilder.append(String.format(DESCRIPTION_LINE_FORMAT_STR, line));
+        }
+        stringBuilder.append(DESCRIPTION_SUFFIX);
+        return stringBuilder.toString();
+    }
+
+}

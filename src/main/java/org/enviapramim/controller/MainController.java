@@ -1,12 +1,13 @@
 package org.enviapramim.controller;
 
-import org.enviapramim.Utils.Utils;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.ItemResponse;
+import org.enviapramim.model.ml.ListingInfo;
 import org.enviapramim.model.validators.ProductValidator;
+import org.enviapramim.model.validators.ProductsToListValidator;
 import org.enviapramim.repository.UserMlData;
 import org.enviapramim.service.MercadoLibreService;
 import org.enviapramim.service.StorageService;
@@ -128,27 +129,6 @@ public class MainController {
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
 
-    public String offerProduct(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        StorageService storageService = new StorageService();
-        MercadoLibreService mercadoLibreService = new MercadoLibreService();
-        Product product = storageService.queryBySKU("teste12");
-        UserMlData userMlData = storageService.queryUserMl(username);
-        if (userMlData == null) {
-            return "redirect:/loginml";
-        }
-        ItemResponse item = mercadoLibreService.offerProduct(product, userMlData.getMlAccessToken());
-        if (item == null) {
-            SecurityContextHolder.clearContext();
-            return "redirect:/login";
-        }
-        Utils utils = new Utils();
-        mercadoLibreService.updateHtmlDescription(utils.createHtmlDescription(product), item.id, userMlData.getMlAccessToken());
-        model.addAttribute("name", "Produto anunciado com sucesso!");
-        return "simpleCallback";
-    }
-
     @RequestMapping(value = "/listProducts", method = RequestMethod.GET)
     public String listProducts(@RequestParam(value="skus[]") String[] skus, Model model) {
         StorageService storageService = new StorageService();
@@ -156,36 +136,66 @@ public class MainController {
         return "preListing";
     }
 
+
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
     public String listProducts2(@RequestBody ProductsToList productsToList, BindingResult result, Model model) {
+        ProductsToListValidator validator = new ProductsToListValidator();
+        ValidationError validationError = validator.validate(productsToList);
+        if (validationError.getCode() == ValidationError.FAIL) {
+            model.addAttribute("name", validationError.getMessage());
+            return "simpleCallback";
+        }
+
         StorageService storageService = new StorageService();
         MercadoLibreService mercadoLibreService = new MercadoLibreService();
         List<Product> productDetailsList = storageService.queryAllProducts();
-        Product currProductDetails;
-        if (productsToList.getProductsToList() != && productsToList.getProductsToList().size() > 0) {
-            for (ProductToList product : productsToList.getProductsToList()) {
-                // find product details
-                if (currProductDetails == null || !currProductDetails.getSku().equals(product.getSku())) {
+        Product currProductDb = null;
+
+        if (productsToList.getProductsToList() != null && productsToList.getProductsToList().size() > 0) {
+            for (ProductToList productWeb : productsToList.getProductsToList()) {
+                if (currProductDb == null || !currProductDb.getSku().equals(productWeb.getSku())) {
+                    // find correct product details
+                    //TODO improve this and do not search sequentially
                     for (Product productDetails : productDetailsList) {
-                        if (productDetails.getSku().equals(product.getSku())) {
-                            currProductDetails = productDetails;
+                        if (productDetails.getSku().equals(productWeb.getSku())) {
+                            currProductDb = productDetails;
                             break;
                         }
                     }
                 }
 
-                if (product.getTitle() != null && product.getTitle().length() > 0 &&
-                        product.getPrice() != null && product.getPrice().length() > 0) {
-                    offerProduct(currProductDetails, product, mercadoLibreService, storageService);
+                //
+                if (productWeb.getTitle() != null && productWeb.getTitle().length() > 0 &&
+                        productWeb.getPrice() != null && productWeb.getPrice().length() > 0) {
+                    ListingInfo info = mercadoLibreService.createListingInfo(currProductDb, productWeb);
+                    ItemResponse item = offerProduct(info, mercadoLibreService, storageService);
+                    if (item == null) { // needs to login again
+                        SecurityContextHolder.clearContext();
+                        return "redirect:/login";
+                    }
                 }
             }
 
-
         }
+
+        model.addAttribute("name", "Produtos anunciado com sucesso!");
+        return "simpleCallback";
+
     }
 
-    private ItemResponse offerProduct(Product productDetails, ProductToList productToList,
-                                      MercadoLibreService mercadoLibreService, StorageService storageService) {
+    private ItemResponse offerProduct(ListingInfo info, MercadoLibreService mercadoLibreService, StorageService storageService) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserMlData userMlData = storageService.queryUserMl(username);
+        if (userMlData == null) {
+            return null;
+        }
+        ItemResponse item = mercadoLibreService.offerProduct(info, userMlData.getMlAccessToken());
+        if (item != null) { // needs to login again
+            mercadoLibreService.updateHtmlDescription(mercadoLibreService.createHtmlDescription(info), item.id, userMlData.getMlAccessToken());
+        }
+        return item;
     }
 
 }

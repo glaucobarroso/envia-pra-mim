@@ -1,24 +1,11 @@
 {
-  "entries": [
+  "productsToList": [
     {
-      "name": "sku",
-      "value": ""
-    },
-    {
-      "name": "title",
-      "value": ""
-    },
-    {
-      "name": "description",
-      "value": ""
-    },
-    {
-      "name": "cost",
-      "value": ""
-    },
-    {
-      "name": "cost",
-      "value": ""
+      "sku": "produto",
+      "title": "Mochila Executiva Leisite Notebook Com Rodinhas Viagem",
+      "price": "6",
+      "freeShipping": false,
+      "type": "cla"
     }
   ]
 }

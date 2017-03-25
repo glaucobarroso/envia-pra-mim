@@ -86,6 +86,7 @@ public class StorageService {
         product.setTitles(productStorageModel.getTitles());
         product.setQuantity(productStorageModel.getQuantity());
         product.setThumbnail(productStorageModel.getThumbNailLink());
+        product.setLinks(productStorageModel.getLinks());
         return product;
     }
 

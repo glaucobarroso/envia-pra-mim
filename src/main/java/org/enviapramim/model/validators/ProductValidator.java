@@ -10,18 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class ProductValidator {
 
-    public static final String SKU_VALIDATION_FAIL = " SKU incorreto, utilize somente caracteres alfanuméricos.";
-    public static final String TITLE_VALIDATION_FAIL = " O Título não pode ser vazio.";
-    public static final String COST_VALIDATION_FAIL = " O Custo deve ser um número.";
-    public static final String QUANTITY_VALIDATION_FAIL = " A quantidade deve ser um número inteiro.";
-    public static final String DESCRIPTION_VALIDATION_FAIL = " A descrição não pode ser vazia.";
-    public static final String EMPTY_MANDATORY_IMAGE_MSG = " A Imagem Principal não pode ser vazia.";
-    public static final String IMAGE_VALIDATION_FAIL_FORMAT_STR = " O arquivo da Imagem %s não é uma imagem válida.";
-    public static final String PRODUCT_VALIDATION_SUCCESS = "SUCCESS";
+    protected static final String SKU_VALIDATION_FAIL = " SKU incorreto, utilize somente caracteres alfanuméricos.";
+    protected static final String TITLE_VALIDATION_FAIL = " O Título não pode ser vazio.";
+    protected static final String COST_VALIDATION_FAIL = " O Custo deve ser um número.";
+    protected static final String QUANTITY_VALIDATION_FAIL = " A quantidade deve ser um número inteiro.";
+    protected static final String DESCRIPTION_VALIDATION_FAIL = " A descrição não pode ser vazia.";
+    protected static final String EMPTY_MANDATORY_IMAGE_MSG = " A Imagem Principal não pode ser vazia.";
+    protected static final String IMAGE_VALIDATION_FAIL_FORMAT_STR = " O arquivo da Imagem %s não é uma imagem válida.";
+    protected static final String PRODUCT_VALIDATION_SUCCESS = "SUCCESS";
 
-    private static final int MANDATORY_IMAGE_VALIDATION_OK = 0;
-    private static final int EMPTY_MANDATORY_IMAGE = 1;
-    private static final int INVALID_MANDATORY_IMAGE = 2;
+    protected static final int MANDATORY_IMAGE_VALIDATION_OK = 0;
+    protected static final int EMPTY_MANDATORY_IMAGE = 1;
+    protected static final int INVALID_MANDATORY_IMAGE = 2;
 
     public ValidationError validate(Product product) {
         String error = "";
@@ -94,17 +94,21 @@ public class ProductValidator {
         return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
     }
 
-    private boolean validateCost(Product product) {
+    protected boolean validateCost(Product product) {
+        product.setCost(product.getCost().replaceAll(",", "."));
+        return validateFloat(product.getCost());
+    }
+
+    protected boolean validateFloat(String number) {
         try {
-            product.setCost(product.getCost().replaceAll(",", "."));
-            Float.parseFloat(product.getCost());
+            Float.parseFloat(number);
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    private boolean validateQuantity(String quantity) {
+    protected boolean validateQuantity(String quantity) {
         try {
             Integer.parseInt(quantity);
         } catch (Exception e) {

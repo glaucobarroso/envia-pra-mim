@@ -97,11 +97,11 @@
                         <td style="padding-top:20px;"><input th:id="'title_' + ${product.sku} + '-' + ${iter.index}" th:value="${title}" type="text" class="form-control title"/></td>
                         <td style="padding-left:30px;">
                             <label label-default="" class="radio">
-                                <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="cla" checked="checked" type="radio" class="type"/>
+                                <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="gold_special" checked="checked" type="radio" class="type"/>
                                 Cl&aacute;ssico
                             </label>
                             <label label-default="" class="radio">
-                                <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="pre" type="radio" class="type"/>
+                                <input th:name="'radio-' + ${product.sku} + '-' + ${iter.index}" value="gold_pro" type="radio" class="type"/>
                                 Premium
                             </label>
                         </td>
