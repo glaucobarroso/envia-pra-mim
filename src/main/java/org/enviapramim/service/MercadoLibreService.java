@@ -13,6 +13,7 @@ import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,11 +86,8 @@ public class MercadoLibreService {
                 e.printStackTrace();
             }
             Response response = meli.put(path, params, jsonString);
-            String body = response.getResponseBody();
             return response.getStatusCode();
         } catch (MeliException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return -1;
@@ -105,10 +103,8 @@ public class MercadoLibreService {
         item.category_id = info.category;
         item.currency_id = "BRL";
         item.buying_mode = "buy_it_now";
-        //item.listing_type_id = "gold_special";
         item.listing_type_id = info.type;
         item.condition = "new";
-//        item.description = product.getDescription();
         item.accepts_mercadopago = true;
         item.warranty = WARRANTY;
 

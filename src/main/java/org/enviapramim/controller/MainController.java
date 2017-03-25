@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.annotation.MultipartConfig;
 import javax.validation.Valid;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -183,6 +184,8 @@ public class MainController {
 
     }
 
+
+
     private ItemResponse offerProduct(ListingInfo info, MercadoLibreService mercadoLibreService, StorageService storageService) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -192,7 +195,7 @@ public class MainController {
             return null;
         }
         ItemResponse item = mercadoLibreService.offerProduct(info, userMlData.getMlAccessToken());
-        if (item != null) { // needs to login again
+        if (item != null) {
             mercadoLibreService.updateHtmlDescription(mercadoLibreService.createHtmlDescription(info), item.id, userMlData.getMlAccessToken());
         }
         return item;

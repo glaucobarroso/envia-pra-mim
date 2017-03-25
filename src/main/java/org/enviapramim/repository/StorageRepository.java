@@ -1,6 +1,5 @@
 package org.enviapramim.repository;
 
-
 import com.google.cloud.storage.*;
 import com.jmethods.catatumbo.EntityManager;
 import com.jmethods.catatumbo.EntityManagerFactory;
@@ -66,13 +65,14 @@ public class StorageRepository {
     private String storeImage(MultipartFile image1, String sku, String number) {
         try {
             Storage storage = StorageOptions.getDefaultInstance().getService();
+            String fileExt = imageTransformer.getImageExt(image1.getOriginalFilename());
+            String contentType = "image/" + fileExt;
             List<Acl> acls = new ArrayList<>();
             acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
             Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, createImageName(image1.getOriginalFilename(),
-                                sku, number)).setAcl(acls).build(),
+                                sku, number)).setAcl(acls).setContentType(contentType).build(),
                                 image1.getInputStream());
-
-            return blob.getMediaLink();
+            return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + sku + number + "." + fileExt;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
