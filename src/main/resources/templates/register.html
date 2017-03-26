@@ -58,8 +58,17 @@
                     <input type="text" class="form-control" name="cost"/>
                     <label>Quantidade</label><br/>
                     <input type="text" class="form-control" name="quantity"/>
-                    <label>Descri&ccedil;&atilde;o</label><br/>
-                    <textarea class="form-control" rows="5" name="description"></textarea>
+                    <label>Categoria</label>
+                    <select class="form-control" name="category">
+                        <option value="MLB104263">Bolsa Couro Feminina</option>
+                        <option value="MLB133465">Bolsa Couro Masculina</option>
+                        <option value="MLB199560">Conjunto de Malas (Frete caro)</option>
+                        <option value="MLB202712">Mochila Camping Masculina</option>
+                        <option value="MLB202975">Mochila Escolar Meninas</option>
+                        <option value="MLB202976">Mochila Escolar Meninos</option>
+                        <option value="MLB202974">Mochila Escolar Masculina</option>
+                        <option value="MLB202885">Mochila Notebook Masculina</option>
+                    </select>
                     <br/>
                 </div>
 
@@ -81,6 +90,13 @@
                     <br/>
                     <button type="button" class="btn btn-primary" id="add-image" onclick="addImage();">Adicionar Imagem</button>
                     <button type="button" class="btn btn-danger" id="remove-image" onclick="removeImage();">Remover Imagem</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label>Descri&ccedil;&atilde;o</label><br/>
+                    <textarea class="form-control" rows="5" name="description"></textarea>
+                    <br/>
                 </div>
             </div>
             <div class="row">

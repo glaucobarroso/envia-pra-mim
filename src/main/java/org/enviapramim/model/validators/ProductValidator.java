@@ -3,7 +3,10 @@ package org.enviapramim.model.validators;
 import org.enviapramim.Utils.ImageValidator;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
+import org.enviapramim.service.MercadoLibreService;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
 
 /**
  * Created by glauco on 21/02/17.
@@ -17,6 +20,7 @@ public class ProductValidator {
     protected static final String DESCRIPTION_VALIDATION_FAIL = " A descrição não pode ser vazia.";
     protected static final String EMPTY_MANDATORY_IMAGE_MSG = " A Imagem Principal não pode ser vazia.";
     protected static final String IMAGE_VALIDATION_FAIL_FORMAT_STR = " O arquivo da Imagem %s não é uma imagem válida.";
+    protected static final String CATEGORY_VALIDATION_FAIL = " A categoria é inválida.";
     protected static final String PRODUCT_VALIDATION_SUCCESS = "SUCCESS";
 
     protected static final int MANDATORY_IMAGE_VALIDATION_OK = 0;
@@ -62,6 +66,10 @@ public class ProductValidator {
                     }
                 }
             }
+        }
+
+        if(product.getCategory() == null || !validateCategory(product.getCategory())) {
+            error += CATEGORY_VALIDATION_FAIL;
         }
 
         if (error.length() != 0) {
@@ -134,5 +142,24 @@ public class ProductValidator {
             return INVALID_MANDATORY_IMAGE;
         }
         return MANDATORY_IMAGE_VALIDATION_OK;
+    }
+
+    private boolean validateCategory(String category) {
+        ArrayList<String> categories = new ArrayList<String>();
+        categories.add(MercadoLibreService.CATEGORY_BACKPACK_SCHOOLL_MALE);
+        categories.add(MercadoLibreService.CATEGORY_BAG_LEATHER_MALE);
+        categories.add(MercadoLibreService.CATEGORY_BACKPACK_SCHOOL_GIRLS);
+        categories.add(MercadoLibreService.CATEGORY_BACKPACK_SCHOOL_BOYS);
+        categories.add(MercadoLibreService.CATEGORY_BACKPACK_NOTEBOOK_MALE);
+        categories.add(MercadoLibreService.CATEGORY_BACKPACK_CAMPING_MALE);
+        categories.add(MercadoLibreService.CATEGORY_BAG_LEATHER_FEMALE);
+        categories.add(MercadoLibreService.CATEGORY_TRAVEL_BAG_SET);
+
+        for (String cat : categories) {
+            if (cat.equals(category)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

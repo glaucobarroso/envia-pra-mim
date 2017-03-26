@@ -15,5 +15,6 @@ public class ListingInfo {
     public List<String> pictureLinks;
     public String description;
     public boolean freeShipping;
+    public String mainTitle;
 
 }

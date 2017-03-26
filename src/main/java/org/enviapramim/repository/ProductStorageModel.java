@@ -22,6 +22,7 @@ public class ProductStorageModel {
     private String quantity;
     private List<String> links;
     private String thumbNailLink;
+    private String category;
 
     public String getSku() {
         return sku;
@@ -85,5 +86,13 @@ public class ProductStorageModel {
 
     public void setLinks(List<String> links) {
         this.links = links;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

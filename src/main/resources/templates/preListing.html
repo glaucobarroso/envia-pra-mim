@@ -68,7 +68,7 @@
                 alert("Produtos anunciados com Sucesso!");
             },
             error: function(xhr) {
-                alert("Erro ao anunciar produtos!");
+                alert(xhr.responseText);
             }
         });
     }

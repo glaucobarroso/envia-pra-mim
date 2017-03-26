@@ -29,9 +29,18 @@ public class MercadoLibreService {
     private static String APP_SECRET = "Fa4Zcl3Kp41nvNGcyKmFf9jB5Fch1cf3";
     private static final String AUTH_CALLBACK = "https://localhost:8443/mlauth";
     private static final String WARRANTY = "90 dias para defeitos de fabricação";
-    private String DESCRIPTION_PREFFIX_FORMAT_STR = "<p style=\"text-align: center;\"><span style=\"font-family: helvetica; font-size: xx-large;\">%s<br /></span></p><hr /><div><br /><div style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff; text-align: center; font-size: x-large;\"><img src=\"%s\" /></div><p style=\"margin: 0.5em 0px; padding: 0px; border: 3px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\"><span style=\"font-family: helvetica; font-size: x-large;\"><strong><span style=\"margin: 0px; padding: 0px; border: 0px none; outline: 0px none; vertical-align: baseline; box-sizing: content-box;\">Detalhes do produto</span></strong></span></p><hr/><div style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\"><span face=\"arial, helvetica, sans-serif\" size=\"4\" style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-family: arial, helvetica, sans-serif; font-size: large;\"><span face=\"arial, helvetica, sans-serif\" size=\"4\" style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-family: arial, helvetica, sans-serif; font-size: large;\"></span></span><ul style=\"margin: 1em 0px; padding: 0px 0px 0px 40px; border: 0px; outline: 0px; vertical-align: baseline; list-style: disc inside; box-sizing: content-box; display: block;\">";
+    private String DESCRIPTION_PREFFIX_FORMAT_STR = "<p style=\"text-align: center;\"><span style=\"font-family: helvetica; font-size: xx-large;\">%s<br /></span></p><hr /><div><br /><div style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff; text-align: center; font-size: x-large;\"><img src=\"%s\" style=\"width:500px;height:500px;\" /></div><p style=\"margin: 0.5em 0px; padding: 0px; border: 3px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\"><span style=\"font-family: helvetica; font-size: x-large;\"><strong><span style=\"margin: 0px; padding: 0px; border: 0px none; outline: 0px none; vertical-align: baseline; box-sizing: content-box;\">Detalhes do produto</span></strong></span></p><hr/><div style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; color: #333333; font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\"><span face=\"arial, helvetica, sans-serif\" size=\"4\" style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-family: arial, helvetica, sans-serif; font-size: large;\"><span face=\"arial, helvetica, sans-serif\" size=\"4\" style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-family: arial, helvetica, sans-serif; font-size: large;\"></span></span><ul style=\"margin: 1em 0px; padding: 0px 0px 0px 40px; border: 0px; outline: 0px; vertical-align: baseline; list-style: disc inside; box-sizing: content-box; display: block;\">";
     private String DESCRIPTION_LINE_FORMAT_STR = "<li style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; display: list-item;\"><span style=\"margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: baseline; box-sizing: content-box; font-size: large; font-family: arial, helvetica, sans-serif;\">%s</span></li>";
     private String DESCRIPTION_SUFFIX = "</div></div>";
+
+    public static final String CATEGORY_BACKPACK_SCHOOLL_MALE = "MLB202974"; //Calçados, Roupas e Bolsas > Mochilas > Escolar > Outras Marcas > Masculino
+    public static final String CATEGORY_BAG_LEATHER_MALE = "MLB133465"; // Calçados, Roupas e Bolsas >  Bolsas  > Masculinas   Couro Sintético   Outras Marcas
+    public static final String CATEGORY_BACKPACK_SCHOOL_GIRLS = "MLB202975"; // Calçados, Roupas e Bolsas   Mochilas   Escolar   Outras Marcas   Meninas
+    public static final String CATEGORY_BACKPACK_SCHOOL_BOYS = "MLB202976"; // Calçados, Roupas e Bolsas   Mochilas   Escolar   Outras Marcas   Meninos
+    public static final String CATEGORY_BACKPACK_NOTEBOOK_MALE = "MLB202885"; // Calçados, Roupas e Bolsas   Mochilas   Notebooks   Outras Marcas   Masculino
+    public static final String CATEGORY_BACKPACK_CAMPING_MALE = "MLB202712"; // Calçados, Roupas e Bolsas   Mochilas   Camping   Outras Marcas   Masculino
+    public static final String CATEGORY_BAG_LEATHER_FEMALE = "MLB104263"; // Calçados, Roupas e Bolsas   Bolsas   Femininas   Couro Sintético   Outras Marcas
+    public static final String CATEGORY_TRAVEL_BAG_SET = "MLB199560"; //  Calçados, Roupas e Bolsas   Malas e Carteiras   Malas   Conjuntos de Malas   Outros
 
     public MercadoLibreService() {
         meli = new Meli(APP_ID, APP_SECRET);
@@ -98,8 +107,6 @@ public class MercadoLibreService {
         item.title = info.title;
         item.available_quantity = info.quantity;
         item.price = info.price;
-        //item.category_id = "MLB3530";
-        //item.category_id = "MLB202885";
         item.category_id = info.category;
         item.currency_id = "BRL";
         item.buying_mode = "buy_it_now";
@@ -150,15 +157,8 @@ public class MercadoLibreService {
     public ListingInfo createListingInfo(Product productDb, ProductToList productWeb) {
         ListingInfo info = new ListingInfo();
         info.title = productWeb.title;
-        /********************************************************
-         *
-         *
-         *
-         * TODO Change hardcoded category
-         *
-         *
-         */
-        info.category = "MLB202885";
+        info.mainTitle = productDb.getTitle();
+        info.category = productDb.getCategory();
         info.pictureLinks = productDb.getLinks();
         info.price = Float.parseFloat(productWeb.price);
         // TODO change hardcoded quantity
@@ -173,7 +173,7 @@ public class MercadoLibreService {
         String htmlDescription = StringEscapeUtils.escapeHtml3(info.description);
         String[] lines = htmlDescription.split("\n");
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format(DESCRIPTION_PREFFIX_FORMAT_STR, StringEscapeUtils.escapeHtml3(info.title), info.pictureLinks.get(0)));
+        stringBuilder.append(String.format(DESCRIPTION_PREFFIX_FORMAT_STR, StringEscapeUtils.escapeHtml3(info.mainTitle), info.pictureLinks.get(0)));
         for (String line : lines) {
             stringBuilder.append(String.format(DESCRIPTION_LINE_FORMAT_STR, line));
         }

@@ -1,5 +1,6 @@
 package org.enviapramim.controller;
 
+import com.ning.http.client.Response;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
@@ -139,12 +140,14 @@ public class MainController {
 
 
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
-    public String listProducts2(@RequestBody ProductsToList productsToList, BindingResult result, Model model) {
+    public ResponseEntity listProducts2(@RequestBody ProductsToList productsToList) {
         ProductsToListValidator validator = new ProductsToListValidator();
+        String respFormat = "{\"title\": \"%s\"}";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         ValidationError validationError = validator.validate(productsToList);
         if (validationError.getCode() == ValidationError.FAIL) {
-            model.addAttribute("name", validationError.getMessage());
-            return "simpleCallback";
+            return new ResponseEntity(String.format(respFormat, validationError.getMessage()), httpHeaders, HttpStatus.BAD_REQUEST);
         }
 
         StorageService storageService = new StorageService();
@@ -172,15 +175,14 @@ public class MainController {
                     ItemResponse item = offerProduct(info, mercadoLibreService, storageService);
                     if (item == null) { // needs to login again
                         SecurityContextHolder.clearContext();
-                        return "redirect:/login";
+                        return new ResponseEntity(String.format(respFormat, "Login in the system"), httpHeaders, HttpStatus.BAD_REQUEST);
                     }
                 }
             }
 
         }
 
-        model.addAttribute("name", "Produtos anunciado com sucesso!");
-        return "simpleCallback";
+        return new ResponseEntity(String.format(respFormat, "OK"), httpHeaders, HttpStatus.OK);
 
     }
 

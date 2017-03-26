@@ -21,9 +21,9 @@ public class Product {
     private String cost;
     private String quantity;
     private List<MultipartFile> images;
-//    private String link1;
     private String thumbnail;
     private List<String> links;
+    private String category;
 
     public String getSku() {
         return sku;
@@ -56,14 +56,6 @@ public class Product {
     public void setCost(String cost) {
         this.cost = cost;
     }
-
-    /*public String getLink1() {
-        return link1;
-    }
-
-    public void setLink1(String link1) {
-        this.link1 = link1;
-    }*/
 
     public List<String> getTitles() {
         return titles;
@@ -103,5 +95,13 @@ public class Product {
 
     public void setLinks(List<String> links) {
         this.links = links;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
