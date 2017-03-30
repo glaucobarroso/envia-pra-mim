@@ -11,6 +11,7 @@
 
 <div th:include="../fragments/common::header"></div>
 <div class="container">
+    <div th:include="../fragments/dialogs :: confirm-listing"></div>
     <div th:include="../fragments/tables :: pre-listing"></div>
     <button class="btn btn-primary" id="list-selected" onclick="listProducts();">Anunciar</button>
 </div>
@@ -65,7 +66,8 @@
             dataType: 'json',
             method: "post",
             success: function(response) {
-                alert("Produtos anunciados com Sucesso!");
+                $("#ml-user").html(response.mluser);
+                $("#confirm-listing-modal").modal('show');
             },
             error: function(xhr) {
                 alert(xhr.responseText);

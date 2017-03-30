@@ -142,7 +142,7 @@ public class MainController {
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
     public ResponseEntity listProducts2(@RequestBody ProductsToList productsToList) {
         ProductsToListValidator validator = new ProductsToListValidator();
-        String respFormat = "{\"title\": \"%s\"}";
+        String respFormat = "{\"mluser\": \"%s\"}";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         ValidationError validationError = validator.validate(productsToList);
