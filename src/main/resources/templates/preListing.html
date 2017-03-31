@@ -13,7 +13,7 @@
 <div class="container">
     <div th:include="../fragments/dialogs :: confirm-listing"></div>
     <div th:include="../fragments/tables :: pre-listing"></div>
-    <button class="btn btn-primary" id="list-selected" onclick="listProducts();">Anunciar</button>
+    <button class="btn btn-primary" id="list-selected" onclick="confirm();">Anunciar</button>
 </div>
 
 </body>
@@ -38,6 +38,25 @@
         $(suggestedPriceId).html(sugPriceF);
     }
 
+    function confirm() {
+
+        $.ajax({
+            url: "/confirmListProducts",
+            method: "get",
+            success: function(response) {
+                if (response.mluser == null) {
+                    alert("Login in the system.");
+                } else {
+                    $("#ml-user").html(response.mluser);
+                    $("#confirm-listing-modal").modal('show');
+                }
+            },
+            error: function(xhr) {
+                alert(xhr.responseText);
+            }
+        });
+    }
+
     function listProducts() {
 
         productsToList = [];
@@ -49,16 +68,11 @@
             productInfo.freeShipping = $(this).find("input.freeshipping-cb").is(':checked');
             productInfo.type = $(this).find("input.type:checked").val();
             productsToList[productsToList.length] = productInfo;
-            console.log("******************************");
-            console.log(productInfo.sku);
-            console.log(productInfo.title);
-            console.log(productInfo.price);
-            console.log(productInfo.type);
-            console.log("******************************");
         });
         var finalObj = {};
         finalObj.productsToList = productsToList;
         var jsonData = JSON.stringify(finalObj);
+
         $.ajax({
             url: "/listProducts2",
             data: jsonData,
@@ -66,8 +80,7 @@
             dataType: 'json',
             method: "post",
             success: function(response) {
-                $("#ml-user").html(response.mluser);
-                $("#confirm-listing-modal").modal('show');
+                alert("Produtos anunciados com sucesso");
             },
             error: function(xhr) {
                 alert(xhr.responseText);

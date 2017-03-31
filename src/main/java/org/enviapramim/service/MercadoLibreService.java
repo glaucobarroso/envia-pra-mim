@@ -11,9 +11,7 @@ import com.ning.http.client.Response;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
-import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,6 +98,25 @@ public class MercadoLibreService {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public MlUserInfo getUserInfo(String accessToken) {
+        try {
+            FluentStringsMap params = new FluentStringsMap();
+            params.add("access_token", accessToken);
+            Response response = null;
+            response = meli.get("/users/me", params);
+            String body = response.getResponseBody();
+            Gson gson = new Gson();
+            return gson.fromJson(body, MlUserInfo.class);
+        } catch (MeliException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private String convertProductToItemJson(ListingInfo info) {

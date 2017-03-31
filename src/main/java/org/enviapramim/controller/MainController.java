@@ -7,6 +7,7 @@ import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.ItemResponse;
 import org.enviapramim.model.ml.ListingInfo;
+import org.enviapramim.model.ml.MlUserInfo;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.model.validators.ProductsToListValidator;
 import org.enviapramim.repository.UserMlData;
@@ -142,7 +143,7 @@ public class MainController {
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
     public ResponseEntity listProducts2(@RequestBody ProductsToList productsToList) {
         ProductsToListValidator validator = new ProductsToListValidator();
-        String respFormat = "{\"mluser\": \"%s\"}";
+        String respFormat = "{\"message\": \"%s\"}";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         ValidationError validationError = validator.validate(productsToList);
@@ -186,7 +187,22 @@ public class MainController {
 
     }
 
-
+    @RequestMapping(value = "/confirmListProducts", method = RequestMethod.GET)
+    public ResponseEntity confirmListProducts() {
+        StorageService storageService = new StorageService();
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
+        String respFormat = "{\"mluser\": \"%s\"}";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserMlData userMlData = storageService.queryUserMl(username);
+        if (userMlData == null) {
+            return new ResponseEntity("{}", httpHeaders, HttpStatus.OK);
+        }
+        MlUserInfo mlUserInfo = mercadoLibreService.getUserInfo(userMlData.getMlAccessToken());
+        return new ResponseEntity(String.format(respFormat, mlUserInfo.email), httpHeaders, HttpStatus.OK);
+    }
 
     private ItemResponse offerProduct(ListingInfo info, MercadoLibreService mercadoLibreService, StorageService storageService) {
 
