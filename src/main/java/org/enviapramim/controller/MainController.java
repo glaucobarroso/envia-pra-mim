@@ -138,7 +138,7 @@ public class MainController {
         model.addAttribute("products", storageService.queryProducts(skus));
         return "preListing";
     }
-
+    
 
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
     public ResponseEntity listProducts2(@RequestBody ProductsToList productsToList) {
@@ -217,6 +217,7 @@ public class MainController {
             mercadoLibreService.updateHtmlDescription(mercadoLibreService.createHtmlDescription(info), item.id, userMlData.getMlAccessToken());
         }
         return item;
+
     }
 
 }

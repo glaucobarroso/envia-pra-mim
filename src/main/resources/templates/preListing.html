@@ -12,8 +12,10 @@
 <div th:include="../fragments/common::header"></div>
 <div class="container">
     <div th:include="../fragments/dialogs :: confirm-listing"></div>
+    <div th:include="../fragments/dialogs :: loading"></div>
     <div th:include="../fragments/tables :: pre-listing"></div>
-    <button class="btn btn-primary" id="list-selected" onclick="confirm();">Anunciar</button>
+
+
 </div>
 
 </body>
@@ -73,6 +75,7 @@
         finalObj.productsToList = productsToList;
         var jsonData = JSON.stringify(finalObj);
 
+        $("#loading-modal").modal('show');
         $.ajax({
             url: "/listProducts2",
             data: jsonData,
@@ -80,12 +83,15 @@
             dataType: 'json',
             method: "post",
             success: function(response) {
+                $("#loading-modal").modal('hide');
                 alert("Produtos anunciados com sucesso");
             },
             error: function(xhr) {
+                $("#loading-modal").modal('hide');
                 alert(xhr.responseText);
             }
         });
+
     }
 
 </script>

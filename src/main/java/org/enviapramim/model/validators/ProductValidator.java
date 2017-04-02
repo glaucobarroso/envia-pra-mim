@@ -83,7 +83,7 @@ public class ProductValidator {
         if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
             error += SKU_VALIDATION_FAIL;
         }
-        if (product.getTitles() == null) {
+        if (product.getTitle() == null) {
             error += TITLE_VALIDATION_FAIL;
         }
         if (product.getCost() == null || !validateCost(product)) {

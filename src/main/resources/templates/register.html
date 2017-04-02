@@ -41,28 +41,45 @@
         }
     }
 
+    function register() {
+        var form = $("#registerForm");
+        var formData = new FormData(form[0]);
+        $("#loading-modal").modal('show');
+        $.ajax({
+            type : 'POST',
+            data: formData,
+            url : '/register',
+            cache:false,
+            contentType: false,
+            processData: false,
+            success : function(data){
+                $("#loading-modal").modal('hide');
+            }
+        });
+        return false;
+    };
+
 </script>
 <body>
-
+    <div th:include="../fragments/dialogs :: loading"></div>
     <div th:include="../fragments/common::header"></div>
     <div class="container">
-        <form id="registerForm" action="#" th:action="@{/register}" th:object="${product}" method="post" enctype="multipart/form-data">
+        <form id="registerForm" enctype="multipart/form-data" method="post">
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
                     <label>SKU</label><br/>
                     <input type="text" class="form-control" name="sku"/>
                     <label>T&iacute;tulo</label><br/>
                     <input type="text" class="form-control" name="title"/>
-                    <!-- input type="text" class="form-control" name="description"/> -->
                     <label>Custo</label><br/>
                     <input type="text" class="form-control" name="cost"/>
                     <label>Quantidade</label><br/>
                     <input type="text" class="form-control" name="quantity"/>
                     <label>Categoria</label>
                     <select class="form-control" name="category">
-                        <option value="MLB104263">Bolsa Couro Feminina</option>
+                       <!-- <option value="MLB104263">Bolsa Couro Feminina</option>
                         <option value="MLB133465">Bolsa Couro Masculina</option>
-                        <option value="MLB199560">Conjunto de Malas (Frete caro)</option>
+                        <option value="MLB199560">Conjunto de Malas (Frete caro)</option> -->
                         <option value="MLB202712">Mochila Camping Masculina</option>
                         <option value="MLB202975">Mochila Escolar Meninas</option>
                         <option value="MLB202976">Mochila Escolar Meninos</option>
@@ -101,7 +118,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
-                    <button class="btn btn-primary" type="submit">Cadastrar</button>
+                    <button class="btn btn-primary" id="register-btn" onclick="register();">Cadastrar</button>
                 </div>
             </div>
         </form>
