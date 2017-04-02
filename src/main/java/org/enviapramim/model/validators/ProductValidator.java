@@ -7,6 +7,7 @@ import org.enviapramim.service.MercadoLibreService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by glauco on 21/02/17.
@@ -34,6 +35,18 @@ public class ProductValidator {
         }
         if (product.getTitles() == null) {
             error += TITLE_VALIDATION_FAIL;
+        } else {
+            List<String> titles = product.getTitles();
+            for (int i = 0; i < titles.size(); i++) {
+                if (titles.get(i) == null || titles.get(i).length() == 0) {
+                    titles.remove(i);
+                    i--;
+                }
+            }
+            product.setTitles(titles);
+            if (product.getTitles().size() == 0) {
+                error += TITLE_VALIDATION_FAIL;
+            }
         }
         if (product.getCost() == null || !validateCost(product)) {
             error += COST_VALIDATION_FAIL;
