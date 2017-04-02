@@ -13,16 +13,16 @@
 
     <div class="container">
         <form th:action="@{/login}" method="post">
+            <div th:if="${param.error}" class="alert alert-danger">
+                <p>Nome de usu&aacute;rio ou senha incorretos.</p>
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success">
+                <p>Voc&ecirc; saiu com sucesso.</p>
+            </div>
             <div><label> Nome do usu&aacute;rio : <input type="text" class="form-control" name="username"/> </label></div>
             <div><label> Senha: <input type="password" class="form-control" name="password"/> </label></div>
             <div><button class="btn btn-primary" type="submit">Entrar</button></div>
         </form>
-        <div th:if="${param.error}">
-            Nome do usu&aacute;rio ou senha incorretos.
-        </div>
-        <div th:if="${param.logout}">
-            Voc&ecirc; saiu.
-        </div>
     </div>
 </body>
 </html>
