@@ -1,6 +1,5 @@
 package org.enviapramim.controller;
 
-import com.ning.http.client.Response;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
@@ -10,6 +9,7 @@ import org.enviapramim.model.ml.ListingInfo;
 import org.enviapramim.model.ml.MlUserInfo;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.model.validators.ProductsToListValidator;
+import org.enviapramim.repository.ListedItems;
 import org.enviapramim.repository.UserMlData;
 import org.enviapramim.service.MercadoLibreService;
 import org.enviapramim.service.StorageService;
@@ -28,7 +28,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +37,8 @@ import java.util.List;
 @Controller
 @MultipartConfig(fileSizeThreshold=1024*1024, maxFileSize=1024*1024*5, maxRequestSize=1024*1024*5*5)
 public class MainController {
+
+    private final String NEEDS_LOGIN = "Entre no sistema para anunciar.";
 
     @GetMapping("/")
     public String index(Model model) {
@@ -84,6 +86,7 @@ public class MainController {
     @RequestMapping(value = "/loginml", method = RequestMethod.GET)
     public String loginMl() {
         MercadoLibreService mercadoLibreService = new MercadoLibreService();
+        String url = mercadoLibreService.getRedirectUrl();
         return "redirect:" + mercadoLibreService.getRedirectUrl();
     }
 
@@ -154,19 +157,36 @@ public class MainController {
 
     @RequestMapping(value = "/listProducts2", method = RequestMethod.POST)
     public ResponseEntity listProducts2(@RequestBody ProductsToList productsToList) {
-        ProductsToListValidator validator = new ProductsToListValidator();
+
+        StorageService storageService = new StorageService();
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
         String respFormat = "{\"message\": \"%s\"}";
+
+        // creating header response
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        // get logged user
+        UserMlData userMlData = getLoggedUser(storageService);
+        if (userMlData == null) { // needs to login again
+            SecurityContextHolder.clearContext();
+            return new ResponseEntity(String.format(respFormat, NEEDS_LOGIN), httpHeaders, HttpStatus.BAD_REQUEST);
+        }
+
+        // validating input
+        ProductsToListValidator validator = new ProductsToListValidator();
         ValidationError validationError = validator.validate(productsToList);
         if (validationError.getCode() == ValidationError.FAIL) {
             return new ResponseEntity(String.format(respFormat, validationError.getMessage()), httpHeaders, HttpStatus.BAD_REQUEST);
         }
 
-        StorageService storageService = new StorageService();
-        MercadoLibreService mercadoLibreService = new MercadoLibreService();
         List<Product> productDetailsList = storageService.queryAllProducts();
         Product currProductDb = null;
+
+        // list of products listed by offer Product method
+        // this lis correlates sku and the offer Id from Mercado Libre
+        List<String> itemsSkus = new ArrayList<String>();
+        List<String> itemsMlId = new ArrayList<String>();
 
         if (productsToList.getProductsToList() != null && productsToList.getProductsToList().size() > 0) {
             for (ProductToList productWeb : productsToList.getProductsToList()) {
@@ -181,20 +201,22 @@ public class MainController {
                     }
                 }
 
-                //
                 if (productWeb.getTitle() != null && productWeb.getTitle().length() > 0 &&
                         productWeb.getPrice() != null && productWeb.getPrice().length() > 0) {
                     ListingInfo info = mercadoLibreService.createListingInfo(currProductDb, productWeb);
-                    ItemResponse item = offerProduct(info, mercadoLibreService, storageService);
+                    ItemResponse item = offerProduct(info, mercadoLibreService, userMlData);
                     if (item == null) { // needs to login again
                         SecurityContextHolder.clearContext();
-                        return new ResponseEntity(String.format(respFormat, "Entre no sistema para anunciar."), httpHeaders, HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity(String.format(respFormat, NEEDS_LOGIN), httpHeaders, HttpStatus.BAD_REQUEST);
                     }
+                    itemsSkus.add(productWeb.sku);
+                    itemsMlId.add(item.id);
                 }
             }
 
         }
-
+        ListedItems listedItems = createListedProductList(itemsSkus, itemsMlId, userMlData);
+        storageService.updateListedItems(listedItems);
         return new ResponseEntity(String.format(respFormat, "OK"), httpHeaders, HttpStatus.OK);
 
     }
@@ -216,20 +238,33 @@ public class MainController {
         return new ResponseEntity(String.format(respFormat, mlUserInfo.email), httpHeaders, HttpStatus.OK);
     }
 
-    private ItemResponse offerProduct(ListingInfo info, MercadoLibreService mercadoLibreService, StorageService storageService) {
+    private ItemResponse offerProduct(ListingInfo info, MercadoLibreService mercadoLibreService, UserMlData userMlData) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        UserMlData userMlData = storageService.queryUserMl(username);
-        if (userMlData == null) {
-            return null;
-        }
         ItemResponse item = mercadoLibreService.offerProduct(info, userMlData.getMlAccessToken());
+        MlUserInfo mlUserInfo = mercadoLibreService.getUserInfo(userMlData.getMlAccessToken());
         if (item != null) {
             mercadoLibreService.updateHtmlDescription(mercadoLibreService.createHtmlDescription(info), item.id, userMlData.getMlAccessToken());
         }
         return item;
 
+    }
+
+    private UserMlData getLoggedUser(StorageService storageService) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        return storageService.queryUserMl(username);
+    }
+
+    private ListedItems createListedProductList(List<String> skus, List<String> mlIds, UserMlData userMlData) {
+        ListedItems listedItems = new ListedItems();
+        listedItems.setItemsSku(skus);
+        listedItems.setItemsMlId(mlIds);
+        listedItems.setUsername(userMlData.getUsername());
+        MercadoLibreService mercadoLibreService = new MercadoLibreService();
+        MlUserInfo mlUserInfo = mercadoLibreService.getUserInfo(userMlData.getMlAccessToken());
+        listedItems.setMlUsername(mlUserInfo.email);
+        listedItems.setId(listedItems.getUsername() + ":" + listedItems.getMlUsername());
+        return listedItems;
     }
 
 }

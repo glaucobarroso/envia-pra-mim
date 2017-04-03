@@ -6,7 +6,7 @@ package org.enviapramim.service;
 public class PricingService {
 
     public static final float MARGIN = 1.8f;
-    public static final float CLASSIC_PERCENTAGE = 1.1f;
+    public static final float CLASSIC_PERCENTAGE = 1.11f;
 
     public String getSuggestedPrice(String cost) {
         return String.format("%.2f", Float.parseFloat(cost) * MARGIN * CLASSIC_PERCENTAGE).replaceAll(",", ".");
