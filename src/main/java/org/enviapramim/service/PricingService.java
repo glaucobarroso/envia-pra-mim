@@ -5,10 +5,11 @@ package org.enviapramim.service;
  */
 public class PricingService {
 
-    public static final float MARGIN_FACTOR = 2;
+    public static final float MARGIN = 1.8f;
+    public static final float CLASSIC_PERCENTAGE = 1.1f;
 
     public String getSuggestedPrice(String cost) {
-        return String.format("%.2f", Float.parseFloat(cost) * MARGIN_FACTOR).replaceAll(",", ".");
+        return String.format("%.2f", Float.parseFloat(cost) * MARGIN * CLASSIC_PERCENTAGE).replaceAll(",", ".");
     }
 
     public String getFreeShippingPrice(String category) {

@@ -25,17 +25,41 @@
     var productsToList = [];
 
     function freeShipping(sku, freeShippingStr, index) {
+        var name = "radio-" + sku + "-" + index;
+        var inputId = "input[name='" + name + "']:checked";
+        var type = $(inputId).val();
+        setSugPrice(sku, freeShippingStr, index, type);
+    }
+
+    function goldPro(sku, freeShippingStr, index) { // premium
+        setSugPrice(sku, freeShippingStr, index, "gold_pro");
+    }
+
+    function goldSpecial(sku, freeShippingStr, index) { // classico
+        setSugPrice(sku, freeShippingStr, index, "gold_special");
+    }
+
+    function setSugPrice(sku, freeShippingStr, index, type) {
         var freeShippingCheckBox = "#freeshipping-" + sku + "-" + index;
         var isFreeShipping = $(freeShippingCheckBox).is(":checked");
+        var costId = "#cost-" + sku + "-" + index;
+        var costStr = $(costId).html();
+        var costF = parseFloat(costStr);
         var suggestedPriceId = "#sprice-" + sku + "-" + index;
-        var sugPriceStr = $(suggestedPriceId).html();
-        var sugPriceF = parseFloat(sugPriceStr);
+
         var freeShippingF = parseFloat(freeShippingStr);
-        if (isFreeShipping) {
-            sugPriceF += freeShippingF;
-        } else {
-            sugPriceF -= freeShippingF;
+        var typeMult = 1;
+        if(type == "gold_special") {
+            typeMult = 1.11;
+        } else if (type == "gold_pro") {
+            typeMult = 1.16;
         }
+        var shippingCostF = 0;
+        if (isFreeShipping) {
+            shippingCostF = freeShippingF;
+        }
+        var sugPriceF = ((costF * 1.8) + shippingCostF) * typeMult;
+
         sugPriceF = Number(sugPriceF.toFixed(2));
         $(suggestedPriceId).html(sugPriceF);
     }
