@@ -160,6 +160,8 @@ public class MercadoLibreService {
         shipping.logistic_type = "drop_off";
         item.shipping = shipping;
 
+        item.seller_custom_field = info.sku;
+
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = "";
         try {
@@ -183,6 +185,7 @@ public class MercadoLibreService {
         info.type = productWeb.type;
         info.description = productDb.getDescription();
         info.freeShipping = productWeb.freeShipping;
+        info.sku = productDb.getSku();
         return info;
     }
 

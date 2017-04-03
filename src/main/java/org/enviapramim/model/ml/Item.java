@@ -20,6 +20,7 @@ public class Item {
     public boolean accepts_mercadopago;
     public Shipping shipping;
     public SellerAddress seller_address;
+    public String seller_custom_field;
 
     public class Picture {
         public String source;

@@ -16,5 +16,6 @@ public class ListingInfo {
     public String description;
     public boolean freeShipping;
     public String mainTitle;
+    public String sku;
 
 }
