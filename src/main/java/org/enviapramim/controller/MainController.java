@@ -9,7 +9,8 @@ import org.enviapramim.model.ml.ListingInfo;
 import org.enviapramim.model.ml.MlUserInfo;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.model.validators.ProductsToListValidator;
-import org.enviapramim.repository.ListedItems;
+import org.enviapramim.repository.ListedItem;
+import org.enviapramim.repository.StorageRepository;
 import org.enviapramim.repository.UserMlData;
 import org.enviapramim.service.MercadoLibreService;
 import org.enviapramim.service.StorageService;
@@ -48,6 +49,15 @@ public class MainController {
     @GetMapping("/login")
     public String login(Model model) {
         return "login";
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public ResponseEntity deleteListItems() {
+        StorageRepository repository = new StorageRepository();
+        repository.deleteAllListedItems();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+        return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)
@@ -183,10 +193,8 @@ public class MainController {
         List<Product> productDetailsList = storageService.queryAllProducts();
         Product currProductDb = null;
 
-        // list of products listed by offer Product method
-        // this lis correlates sku and the offer Id from Mercado Libre
-        List<String> itemsSkus = new ArrayList<String>();
-        List<String> itemsMlId = new ArrayList<String>();
+        // list of products listed by this list correlates sku with the offer Id
+        List<ListedItem> listedItems = new ArrayList<ListedItem>();
 
         if (productsToList.getProductsToList() != null && productsToList.getProductsToList().size() > 0) {
             for (ProductToList productWeb : productsToList.getProductsToList()) {
@@ -209,14 +217,13 @@ public class MainController {
                         SecurityContextHolder.clearContext();
                         return new ResponseEntity(String.format(respFormat, NEEDS_LOGIN), httpHeaders, HttpStatus.BAD_REQUEST);
                     }
-                    itemsSkus.add(productWeb.sku);
-                    itemsMlId.add(item.id);
+                    ListedItem listedItem = mercadoLibreService.createListedItem(item.id, productWeb.sku, userMlData);
+                    listedItems.add(listedItem);
                 }
             }
 
         }
-        ListedItems listedItems = createListedProductList(itemsSkus, itemsMlId, userMlData);
-        storageService.updateListedItems(listedItems);
+        storageService.addListedItems(listedItems);
         return new ResponseEntity(String.format(respFormat, "OK"), httpHeaders, HttpStatus.OK);
 
     }
@@ -253,18 +260,6 @@ public class MainController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         return storageService.queryUserMl(username);
-    }
-
-    private ListedItems createListedProductList(List<String> skus, List<String> mlIds, UserMlData userMlData) {
-        ListedItems listedItems = new ListedItems();
-        listedItems.setItemsSku(skus);
-        listedItems.setItemsMlId(mlIds);
-        listedItems.setUsername(userMlData.getUsername());
-        MercadoLibreService mercadoLibreService = new MercadoLibreService();
-        MlUserInfo mlUserInfo = mercadoLibreService.getUserInfo(userMlData.getMlAccessToken());
-        listedItems.setMlUsername(mlUserInfo.email);
-        listedItems.setId(listedItems.getUsername() + ":" + listedItems.getMlUsername());
-        return listedItems;
     }
 
 }

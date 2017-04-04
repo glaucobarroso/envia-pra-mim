@@ -130,25 +130,18 @@ public class StorageRepository {
         entityManager.deleteAll(UserMlData.class);
     }
 
-    public List<ListedItems> queryAllListedItems() {
+    public List<ListedItem> queryAllListedItems() {
         EntityQueryRequest request = entityManager.createEntityQueryRequest("SELECT * FROM listed");
-        QueryResponse<ListedItems> response = entityManager.executeEntityQueryRequest(ListedItems.class, request);
+        QueryResponse<ListedItem> response = entityManager.executeEntityQueryRequest(ListedItem.class, request);
         return response.getResults();
     }
 
-    public void updateListedItems(ListedItems listedItems) {
-        ListedItems listedItemsFromDb = entityManager.load(ListedItems.class, listedItems.getId());
-        if (listedItemsFromDb == null) {
-            entityManager.insert(listedItems);
-        } else {
-            List<String> itemSkus = listedItemsFromDb.getItemsSku();
-            itemSkus.addAll(listedItems.getItemsSku());
-            listedItemsFromDb.setItemsSku(itemSkus);
-            List<String> itemMlIds = listedItemsFromDb.getItemsMlId();
-            itemMlIds.addAll(listedItems.getItemsMlId());
-            listedItemsFromDb.setItemsMlId(itemMlIds);
-            entityManager.update(listedItemsFromDb);
-        }
+    public void deleteAllListedItems() {
+        long a = entityManager.deleteAll(ListedItem.class);
+    }
+
+    public void addListedItems(List<ListedItem> listedItems) {
+        entityManager.insert(listedItems);
     }
 
     private ProductStorageModel convertToProductStorage(Product product) {

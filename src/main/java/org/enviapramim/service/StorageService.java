@@ -2,7 +2,7 @@ package org.enviapramim.service;
 
 import org.enviapramim.model.PreListing;
 import org.enviapramim.model.Product;
-import org.enviapramim.repository.ListedItems;
+import org.enviapramim.repository.ListedItem;
 import org.enviapramim.repository.ProductStorageModel;
 import org.enviapramim.repository.StorageRepository;
 import org.enviapramim.repository.UserMlData;
@@ -78,11 +78,11 @@ public class StorageService {
         storageRepository.deleteAllUserInfo();
     }
 
-    public void updateListedItems(ListedItems listedItems) {
-        storageRepository.updateListedItems(listedItems);
+    public void addListedItems(List<ListedItem> listedItems) {
+        storageRepository.addListedItems(listedItems);
     }
 
-    public List<ListedItems> queryAllListedItems() {
+    public List<ListedItem> queryAllListedItems() {
         return storageRepository.queryAllListedItems();
     }
 

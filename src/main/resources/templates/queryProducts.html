@@ -16,6 +16,7 @@
 
 <div th:include="../fragments/common::header"></div>
 <div class="container">
+    <div th:include="../fragments/dialogs :: confirm-delete"></div>
     <div th:include="../fragments/tables :: products" id="products"></div>
     <button class="btn btn-primary" id="list-selected" onclick="listSelected();">Anunciar Selecionados</button>
 </div>
@@ -35,6 +36,14 @@
 
     });
 
+/*
+    $('#confirm-delete-btn').on('click', function() {
+        var id = $(this).attr('id');
+        var sku = id.split(_)[1];
+        deleteNow(sku);
+        $('#confirm-delete').modal('show');
+    });
+*/
     function listSelected() {
         var i = 0;
         var added = 0;
@@ -69,7 +78,18 @@
         selectAll($(this).is(":checked"));
     });
 
-    function deleteNow(sku) {
+    //triggered when modal is about to be shown
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var sku = $(e.relatedTarget).data('sku');
+        $('#modal-sku').html(sku);
+    });
+
+    $('#confirm-delete-btn').click(function(e) {
+        var sku = $('#modal-sku').html();
+        deleteNow1(sku);
+    });
+
+    function deleteNow1(sku) {
         var btId = '#delete_' + sku;
         var tr = $(btId).parent().parent();
         $.ajax({

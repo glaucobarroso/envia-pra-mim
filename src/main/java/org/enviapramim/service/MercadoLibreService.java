@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ml.*;
+import org.enviapramim.repository.ListedItem;
+import org.enviapramim.repository.UserMlData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -199,6 +201,16 @@ public class MercadoLibreService {
         }
         stringBuilder.append(DESCRIPTION_SUFFIX);
         return stringBuilder.toString();
+    }
+
+    public ListedItem createListedItem(String mlId, String sku, UserMlData userMlData) {
+        ListedItem listedItem = new ListedItem();
+        listedItem.setSku(sku);
+        listedItem.setMlId(mlId);
+        listedItem.setUsername(userMlData.getUsername());
+        MlUserInfo mlUserInfo = getUserInfo(userMlData.getMlAccessToken());
+        listedItem.setMlUsername(mlUserInfo.email);
+        return listedItem;
     }
 
 }

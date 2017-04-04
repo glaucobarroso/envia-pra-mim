@@ -11,21 +11,20 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity(kind = "listed")
-public class ListedItems {
+public class ListedItem {
 
     @Identifier
-    private String id;
+    private String mlId;
     private String mlUsername;
     private String username;
-    private List<String> itemsSku;
-    private List<String> itemsMlId;
+    private String sku;
 
-    public String getId() {
-        return id;
+    public String getMlId() {
+        return mlId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMlId(String mlId) {
+        this.mlId = mlId;
     }
 
     public String getMlUsername() {
@@ -44,19 +43,12 @@ public class ListedItems {
         this.username = username;
     }
 
-    public List<String> getItemsSku() {
-        return itemsSku;
+    public String getSku() {
+        return sku;
     }
 
-    public void setItemsSku(List<String> itemsSku) {
-        this.itemsSku = itemsSku;
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
-    public List<String> getItemsMlId() {
-        return itemsMlId;
-    }
-
-    public void setItemsMlId(List<String> itemsMlId) {
-        this.itemsMlId = itemsMlId;
-    }
 }

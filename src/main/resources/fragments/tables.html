@@ -28,7 +28,7 @@
                     <td><input th:id="'quantity_' + ${product.sku}" th:value="${product.quantity}" type="text" class="form-control" name="quantity"/></td>
                     <td><input th:id="'cost_' + ${product.sku}" th:value="${product.cost}" type="text" class="form-control" name="cost"/></td>
                     <!-- <td><button th:id="'update_' + ${product.sku}" type="button" th:onclick="'updateNow(\'' + ${product.sku} + '\');'" class="btn btn-info update-btn">Alterar</button></td> -->
-                    <td><button th:id="'delete_' + ${product.sku}" type="button" th:onclick="'deleteNow(\'' + ${product.sku} + '\');'" class="btn btn-danger delete-btn">Deletar</button></td>
+                    <td><button th:id="'delete_' + ${product.sku}" type="button" th:onclick="'deleteNow(\'' + ${product.sku} + '\');'" class="btn btn-danger delete-btn" data-toggle="modal" data-target="#confirm-delete" th:attr="data-sku=${product.sku}">Deletar</button></td>
                 </tr>
             </tbody>
         </table>
