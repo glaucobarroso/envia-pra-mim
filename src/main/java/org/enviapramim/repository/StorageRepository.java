@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class StorageRepository {
 
-    private static final String BUCKET_NAME = "x-pulsar-158711.appspot.com";
+    private static final String BUCKET_NAME = "envia-pra-mim.appspot.com";
 
     EntityManager entityManager;
     private ImageTransformer imageTransformer;
