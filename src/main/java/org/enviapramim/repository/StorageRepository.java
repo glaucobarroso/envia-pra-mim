@@ -44,8 +44,13 @@ public class StorageRepository {
             linksList.add(link);
         }
         productStorageModel.setLinks(linksList);
-
-        ProductStorageModel retProd = entityManager.insert(productStorageModel);
+        ProductStorageModel retProd = null;
+        try {
+            retProd = entityManager.insert(productStorageModel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            retProd = entityManager.update(productStorageModel);
+        }
         return retProd;
     }
 
@@ -86,7 +91,7 @@ public class StorageRepository {
         List<Acl> acls = new ArrayList<>();
         acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
         Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, imageName).setAcl(acls).build(), image);
-        return blob.getMediaLink();
+        return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + imageName;
     }
 
     private String createImageName(String originalName, String sku, String number) {
