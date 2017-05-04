@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enviar XML com dados fiscais</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div th:include="../fragments/common::header"></div>
+    <div class="container">
+        <form id="formXml" enctype="multipart/form-data" method="post" action="/fiscalDataUpload">
+            <p>
+                <label>Selecione o zip com os xmls das notas fiscais</label>
+                <input type="file" name="fiscalxml"/>
+            </p>
+            <p>
+                <input type="submit" value="Submit" />
+            </p>
+        </form>
+    </div>
+</body>
+</html>

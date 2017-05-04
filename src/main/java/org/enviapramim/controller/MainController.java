@@ -1,6 +1,7 @@
 package org.enviapramim.controller;
 
 import org.enviapramim.Utils.ValidationError;
+import org.enviapramim.model.FiscalData;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ProductsToList;
@@ -12,6 +13,7 @@ import org.enviapramim.model.validators.ProductsToListValidator;
 import org.enviapramim.repository.ListedItem;
 import org.enviapramim.repository.StorageRepository;
 import org.enviapramim.repository.UserMlData;
+import org.enviapramim.service.FiscalDataService;
 import org.enviapramim.service.MercadoLibreService;
 import org.enviapramim.service.StorageService;
 import org.springframework.http.HttpHeaders;
@@ -25,12 +27,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by glauco on 16/02/17.
@@ -260,6 +267,26 @@ public class MainController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         return storageService.queryUserMl(username);
+    }
+
+    @GetMapping("/fiscalData")
+    public String handleFiscalXml(Model model) {
+        //model.addAttribute("product", new Product());
+        return "fiscalData";
+    }
+
+    @PostMapping("/fiscalDataUpload")
+    public String handleFileUpload(@RequestParam("fiscalxml") MultipartFile file) {
+
+        try {
+            ZipInputStream zipInputStream = new ZipInputStream(file.getInputStream());
+            FiscalDataService fiscalDataService = new FiscalDataService();
+            List<String> nfeXmlList = fiscalDataService.unzip(zipInputStream);
+            List<FiscalData> fiscalDataList = fiscalDataService.getFiscalData(nfeXmlList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/";
     }
 
 }
