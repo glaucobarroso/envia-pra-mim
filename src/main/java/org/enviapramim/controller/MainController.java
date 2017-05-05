@@ -8,6 +8,7 @@ import org.enviapramim.model.ProductsToList;
 import org.enviapramim.model.ml.ItemResponse;
 import org.enviapramim.model.ml.ListingInfo;
 import org.enviapramim.model.ml.MlUserInfo;
+import org.enviapramim.model.ml.OrdersInfo;
 import org.enviapramim.model.validators.ProductValidator;
 import org.enviapramim.model.validators.ProductsToListValidator;
 import org.enviapramim.repository.ListedItem;
@@ -36,7 +37,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -283,10 +283,66 @@ public class MainController {
             FiscalDataService fiscalDataService = new FiscalDataService();
             List<String> nfeXmlList = fiscalDataService.unzip(zipInputStream);
             List<FiscalData> fiscalDataList = fiscalDataService.getFiscalData(nfeXmlList);
+            MercadoLibreService mercadoLibreService = new MercadoLibreService();
+            // get logged user
+            StorageService storageService = new StorageService();
+            UserMlData userMlData = getLoggedUser(storageService);
+            if (userMlData == null) { // needs to login again
+                SecurityContextHolder.clearContext();
+                return "login";
+            }
+//            mercadoLibreService.updateFiscalData(userMlData.getMlAccessToken(), "2764271", "35170527311437000100550010000001061546008038");
+            MlUserInfo userInfo = mercadoLibreService.getUserInfo(userMlData.getMlAccessToken());
+            OrdersInfo ordersInfo = mercadoLibreService.getOrders(userMlData.getMlAccessToken(), userInfo.id, null, "invoice_pending");
+            if (ordersInfo.results != null) {
+                for (OrdersInfo.Result result : ordersInfo.results) {
+                    int j;
+                    for (j = 0; j < fiscalDataList.size(); j++) {
+                        FiscalData fiscalData = fiscalDataList.get(j);
+                        String shipmentId = findShipmentId(mercadoLibreService, result, fiscalData);
+                        if (shipmentId != null) {
+                            mercadoLibreService.setFiscalData(userMlData.getMlAccessToken(), shipmentId, fiscalData);
+                            break;
+                        }
+                    }
+                    if (j < fiscalDataList.size()) {
+                        fiscalDataList.remove(j);
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return "redirect:/";
+    }
+
+    private String findShipmentId(MercadoLibreService mercadoLibreService, OrdersInfo.Result result, FiscalData fiscalData) {
+        List<OrdersInfo.Shipping_item> shipping_items = mercadoLibreService.getShippingItemsFromOrdersInfoResult(result);
+        if (shipping_items != null && shipping_items.size() > 0) {
+            // Currently all orders will have just one shippiment item
+            OrdersInfo.Shipping_item shipping_item = shipping_items.get(0);
+            if(shipping_item.id != null) {
+                if (shipping_item.id.equalsIgnoreCase(fiscalData.productId)) {
+                    String cpf = mercadoLibreService.getBuyerCPFFromOrdersInfoResult(result);
+                    Integer quantity = shipping_item.quantity;
+                    if (cpf != null && quantity != null && quantity > 0) {
+                        if (cpf.equalsIgnoreCase(fiscalData.buyerCpf) && quantity == fiscalData.quantity.intValue()) {
+                            return mercadoLibreService.getShippingIdFromOrdersInfoResult(result).toString();
+                        }
+                    } else {
+                        // compare by name as CPF is null
+                        String fullName = mercadoLibreService.getBuyerFullNameFromOrdersInfoResult(result);
+                        if (fullName != null && quantity != null && quantity > 0) {
+                            if (fullName.equalsIgnoreCase(fiscalData.buyerName) && quantity == fiscalData.quantity.intValue()) {
+                                return mercadoLibreService.getShippingIdFromOrdersInfoResult(result).toString();
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return null;
     }
 
 }

@@ -31,6 +31,7 @@ public class FiscalDataService {
     private static final String NFEID_NFE_TAG1 = "chNFe";
     private static final String NFEID_NFE_TAG2 = "infNFe";
     private static final String BUYERINFO_NFE_TAG = "dest";
+    private static final String QUANTITY_NFE_TAG = "qCom";
 
     public List<String> unzip(ZipInputStream zipInputStream) {
         ArrayList<String> ret = new ArrayList<String>();
@@ -72,6 +73,7 @@ public class FiscalDataService {
                 fiscalData.buyerName = getBuyerName(doc);
                 fiscalData.cfOp = getCfop(doc);
                 fiscalData.productId = getProductId(doc);
+                fiscalData.quantity = getQuantity(doc);
                 fiscalDataList.add(fiscalData);
             }
         } catch (ParserConfigurationException e) {
@@ -111,7 +113,11 @@ public class FiscalDataService {
         if (nfeId != null && nfeId.length() > 0) {
             return nfeId;
         }
-        return getFirstNodeAttribute(doc, NFEID_NFE_TAG2);
+        nfeId = getFirstNodeAttribute(doc, NFEID_NFE_TAG2, "Id");
+        if (nfeId != null) {
+            return nfeId.substring(nfeId.indexOf("NFe") + 3);
+        }
+        return null;
     }
 
     private Node getFirstNode(Document doc, String tag) {
@@ -131,24 +137,35 @@ public class FiscalDataService {
         return null;
     }
 
+    private Float getQuantity(Document doc) {
+        String quantity = getFirstNodeValue(doc, QUANTITY_NFE_TAG);
+        try {
+            return Float.parseFloat(quantity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private String getFirstNodeValue(Document doc, String tag) {
-        return getFirstNode(doc, tag).getTextContent();
+        Node node = getFirstNode(doc, tag);
+        return node != null ? node.getTextContent() : null;
     }
 
     private String getFirstNodeValue(NodeList nodeList, String tag) {
-        return getFirstNode(nodeList, tag).getTextContent();
+        Node node = getFirstNode(nodeList, tag);
+        return node != null ? node.getTextContent() : null;
     }
 
-    private String getFirstNodeAttribute(Document doc, String tag) {
-        NodeList nodeist = doc.getElementsByTagName(tag);
-        if (nodeist != null && nodeist.getLength() > 0) {
-            if (nodeist != null) {
-                for (int i = 0; i < nodeist.getLength(); i++) {
-                    Node node = nodeist.item(i);
+    private String getFirstNodeAttribute(Document doc, String tag, String attributeTag) {
+        NodeList nodeList = doc.getElementsByTagName(tag);
+        if (nodeList != null && nodeList.getLength() > 0) {
+            if (nodeList != null) {
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node node = nodeList.item(i);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
-                        String rawNfeId = element.getAttribute("Id");
-                        return rawNfeId.substring(rawNfeId.indexOf("NFe") + 3);
+                        return element.getAttribute(attributeTag);
                     }
                 }
             }

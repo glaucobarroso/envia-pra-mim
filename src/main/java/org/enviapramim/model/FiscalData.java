@@ -9,4 +9,5 @@ public class FiscalData {
     public String cfOp;
     public String nfeId;
     public String productId;
+    public Float quantity;
 }

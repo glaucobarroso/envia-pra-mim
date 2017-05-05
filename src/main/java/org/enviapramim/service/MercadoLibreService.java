@@ -9,6 +9,7 @@ import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.enviapramim.model.FiscalData;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ml.*;
@@ -212,6 +213,140 @@ public class MercadoLibreService {
         MlUserInfo mlUserInfo = getUserInfo(userMlData.getMlAccessToken());
         listedItem.setMlUsername(mlUserInfo.email);
         return listedItem;
+    }
+
+    //pega a vendas de acordo a paginacao e filtro
+   // $anuncios = $meli->get('/orders/search/', array('seller'=>$dados_meli['idSeller'],'access_token' => $_SESSION['access_token'], 'sort' =>'date_desc','limit'=>$TotalPaginas,'offset'=>$PaginaAtual, 'order.status'=>$StatusInicial, 'shipping.status'=>$StatusEnvioInicial));
+
+    //numero total de vendas
+    // $anuncios_total = $meli->get('/orders/search/', array('order.status'=>$StatusInicial,'shipping.status'=>$StatusEnvioInicial));
+
+    public OrdersInfo getOrders(String accessToken, Integer sellerId, String shippingStatus, String shippingSubStatus) {
+        FluentStringsMap params = new FluentStringsMap();
+        params.add("access_token", accessToken);
+        params.add("seller", sellerId.toString());
+        params.add("sort", "date_desc");
+        if (shippingStatus != null) {
+            params.add("shipping.status", shippingStatus);
+        }
+        if (shippingSubStatus != null) {
+            params.add("shipping.substatus", shippingSubStatus);
+        }
+        try {
+            Gson gson = new Gson();
+            Response response = null;
+            response = meli.get("/orders/search/", params);
+            String body = response.getResponseBody();
+            return gson.fromJson(body, OrdersInfo.class);
+        } catch (MeliException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public InvoiceDataResponse setFiscalData(String accessToken, String shipmentId, FiscalData fiscalData) {
+        FluentStringsMap params = new FluentStringsMap();
+        params.add("access_token", accessToken);
+        params.add("siteId", "MLB");
+        try {
+            Gson gson = new Gson();
+            Response response = null;
+            response = meli.post("/shipments/" + shipmentId + "/invoice_data/", params, convertFiscalDataToInvoiceJson(fiscalData));
+            String body = response.getResponseBody();
+            return gson.fromJson(body, InvoiceDataResponse.class);
+        } catch (MeliException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void updateFiscalData(String accessToken, String invoiceId, String nfeId) {
+        FluentStringsMap params = new FluentStringsMap();
+        params.add("access_token", accessToken);
+        params.add("siteId", "MLB");
+        String jsonFormat = "{\"fiscal_key\": \"%s\"}";
+        String json = String.format(jsonFormat, nfeId);
+        https:
+//api.mercadolibre.com/shipment_invoice/{id}?access_token={accessToken}&siteId={siteId}
+        try {
+            Gson gson = new Gson();
+            Response response = null;
+            response = meli.put("/shipment_invoice/" + invoiceId, params, json);
+            String body = response.getResponseBody();
+            int a = 1;
+        } catch (MeliException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+        /*
+        curl -X PUT -H "Cot: application/json" -d '{
+        fiscal_key: {fiscalKey}
+    }'
+    https://api.mercadolibre.com/shipment_invoice/{id}?access_token={accessToken}&siteId={siteId}
+    }*/
+
+    private String convertFiscalDataToInvoiceJson(FiscalData fiscalData) {
+        InvoiceData invoiceData = new InvoiceData();
+        invoiceData.fiscal_key = fiscalData.nfeId;
+        invoiceData.additional_data = invoiceData.new Additional_data();
+        invoiceData.additional_data.cfop = fiscalData.cfOp;
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            jsonString = mapper.writeValueAsString(invoiceData);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonString;
+    }
+
+    public String getBuyerCPFFromOrdersInfoResult(OrdersInfo.Result result) {
+        OrdersInfo.Buyer buyerInfo = result.buyer;
+        if (buyerInfo != null) {
+            OrdersInfo.Billing_info billing_info = buyerInfo.billing_info;
+            if (billing_info != null) {
+                String doc_type = billing_info.doc_type;
+                String doc_number = billing_info.doc_number;
+                if ("CPF".equalsIgnoreCase(doc_type)) {
+                    return doc_number;
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getBuyerFullNameFromOrdersInfoResult(OrdersInfo.Result result) {
+        OrdersInfo.Buyer buyerInfo = result.buyer;
+        if (buyerInfo != null) {
+            String firstName = buyerInfo.first_name;
+            String lastName = buyerInfo.last_name;
+            if (firstName != null & lastName != null) {
+                return firstName + " " + lastName;
+            }
+        }
+        return null;
+    }
+
+    public List<OrdersInfo.Shipping_item> getShippingItemsFromOrdersInfoResult(OrdersInfo.Result result) {
+        OrdersInfo.Shipping shipping = result.shipping;
+        if (shipping != null) {
+            return shipping.shipping_items;
+        }
+        return null;
+    }
+
+    public Long getShippingIdFromOrdersInfoResult(OrdersInfo.Result result) {
+        OrdersInfo.Shipping shipping = result.shipping;
+        if (shipping != null) {
+            return shipping.id;
+        }
+        return null;
     }
 
 }

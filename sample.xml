@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10">
+    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infNFe Id="NFe35170527311437000100550010000000841487586418" versao="3.10">
+            <ide>
+                <cUF>35</cUF>
+                <cNF>48758641</cNF>
+                <natOp>VENDA DE MERCADORIAS</natOp>
+                <indPag>0</indPag>
+                <mod>55</mod>
+                <serie>1</serie>
+                <nNF>84</nNF>
+                <dhEmi>2017-05-03T07:16:16-03:00</dhEmi>
+                <dhSaiEnt>2017-05-03T07:16:16-03:00</dhSaiEnt>
+                <tpNF>1</tpNF>
+                <idDest>2</idDest>
+                <cMunFG>3509502</cMunFG>
+                <tpImp>1</tpImp>
+                <tpEmis>1</tpEmis>
+                <cDV>8</cDV>
+                <tpAmb>1</tpAmb>
+                <finNFe>1</finNFe>
+                <indFinal>1</indFinal>
+                <indPres>2</indPres>
+                <procEmi>0</procEmi>
+                <verProc>Bling 1.0</verProc>
+            </ide>
+            <emit>
+                <CNPJ>27311437000100</CNPJ>
+                <xNome>ENVIA PRA MIM COMERCIO EIRELI - ME</xNome>
+                <xFant>ENVIA PRA MIM</xFant>
+                <enderEmit>
+                    <xLgr>Rua Rafael Sampaio</xLgr>
+                    <nro>387</nro>
+                    <xBairro>Guanabara</xBairro>
+                    <cMun>3509502</cMun>
+                    <xMun>Campinas</xMun>
+                    <UF>SP</UF>
+                    <CEP>13023240</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>Brasil</xPais>
+                    <fone>19981607345</fone>
+                </enderEmit>
+                <IE>795819602116</IE>
+                <CRT>1</CRT>
+            </emit>
+            <dest>
+                <CPF>05982500429</CPF>
+                <xNome>Mario Jorge</xNome>
+                <enderDest>
+                    <xLgr>Avenida Visconde De Jequitinhonha</xLgr>
+                    <nro>209</nro>
+                    <xCpl>9 ANDAR SALA 905</xCpl>
+                    <xBairro>Boa Viagem</xBairro>
+                    <cMun>2611606</cMun>
+                    <xMun>Recife</xMun>
+                    <UF>PE</UF>
+                    <CEP>51021190</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>Brasil</xPais>
+                    <fone>8132497671</fone>
+                </enderDest>
+                <indIEDest>9</indIEDest>
+                <email>mjorge.j136yz+2-ogeztmnjqgmzdknry@mail.mercadolivre.com</email>
+            </dest>
+            <det nItem="1">
+                <prod>
+                    <cProd>MLB759969300</cProd>
+                    <cEAN/>
+                    <xProd>Mala De Couro De Viagem Com Rodinha, Kit Bolsa Viagem Grande</xProd>
+                    <NCM>42022220</NCM>
+                    <CFOP>6108</CFOP>
+                    <uCom>UN</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>169.00</vUnCom>
+                    <vProd>169.00</vProd>
+                    <cEANTrib/>
+                    <uTrib>UN</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>169.00</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>68.51</vTotTrib>
+                    <ICMS>
+                        <ICMSSN102>
+                            <orig>0</orig>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
+                    </ICMS>
+                    <IPI>
+                        <cEnq>999</cEnq>
+                        <IPITrib>
+                            <CST>99</CST>
+                            <vBC>169.00</vBC>
+                            <pIPI>0.00</pIPI>
+                            <vIPI>0.00</vIPI>
+                        </IPITrib>
+                    </IPI>
+                    <PIS>
+                        <PISOutr>
+                            <CST>49</CST>
+                            <vBC>0.00</vBC>
+                            <pPIS>0.00</pPIS>
+                            <vPIS>0.00</vPIS>
+                        </PISOutr>
+                    </PIS>
+                    <COFINS>
+                        <COFINSOutr>
+                            <CST>49</CST>
+                            <vBC>0.00</vBC>
+                            <pCOFINS>0.00</pCOFINS>
+                            <vCOFINS>0.00</vCOFINS>
+                        </COFINSOutr>
+                    </COFINS>
+                    <ICMSUFDest>
+                        <vBCUFDest>169.00</vBCUFDest>
+                        <pFCPUFDest>0.0000</pFCPUFDest>
+                        <pICMSUFDest>18.0000</pICMSUFDest>
+                        <pICMSInter>7.00</pICMSInter>
+                        <pICMSInterPart>60.0000</pICMSInterPart>
+                        <vFCPUFDest>0.00</vFCPUFDest>
+                        <vICMSUFDest>11.15</vICMSUFDest>
+                        <vICMSUFRemet>7.44</vICMSUFRemet>
+                    </ICMSUFDest>
+                </imposto>
+            </det>
+            <total>
+                <ICMSTot>
+                    <vBC>0.00</vBC>
+                    <vICMS>0.00</vICMS>
+                    <vICMSDeson>0</vICMSDeson>
+                    <vICMSUFDest>11.15</vICMSUFDest>
+                    <vICMSUFRemet>7.44</vICMSUFRemet>
+                    <vBCST>0.00</vBCST>
+                    <vST>0.00</vST>
+                    <vProd>169.00</vProd>
+                    <vFrete>0.00</vFrete>
+                    <vSeg>0.00</vSeg>
+                    <vDesc>0.00</vDesc>
+                    <vII>0.00</vII>
+                    <vIPI>0.00</vIPI>
+                    <vPIS>0.00</vPIS>
+                    <vCOFINS>0.00</vCOFINS>
+                    <vOutro>0.00</vOutro>
+                    <vNF>169.00</vNF>
+                    <vTotTrib>68.51</vTotTrib>
+                </ICMSTot>
+            </total>
+            <transp>
+                <modFrete>0</modFrete>
+                <transporta>
+                    <CNPJ>20121850000155</CNPJ>
+                    <xNome>Mercado Envios Servicos de Logistica Ltda</xNome>
+                    <IE>492875457119</IE>
+                    <xEnder>Avenida das Nacoes Unidas, 3003, Bonfim</xEnder>
+                    <xMun>Osasco</xMun>
+                    <UF>SP</UF>
+                </transporta>
+                <vol>
+                    <qVol>1</qVol>
+                    <pesoL>0.000</pesoL>
+                    <pesoB>0.000</pesoB>
+                </vol>
+            </transp>
+            <cobr>
+                <fat>
+                    <nFat>000084</nFat>
+                    <vOrig>169.00</vOrig>
+                    <vLiq>169.00</vLiq>
+                </fat>
+                <dup>
+                    <nDup>000084/01</nDup>
+                    <dVenc>2017-05-03</dVenc>
+                    <vDup>169.00</vDup>
+                </dup>
+            </cobr>
+            <infAdic>
+                <infCpl>DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL - NAO GERA DIREITO A CREDITO
+                    FISCAL DE IPI&lt;br /&gt;Total aproximado de tributos: R$ 68,51 (40,54%) Federais R$ 38,09 (22,54%)
+                    Estaduais R$ 30,42 (18,00%) . Fonte IBPT.&lt;br /&gt;Valor do ICMS DIFAL para UF de origem R$ 7,44&lt;br
+                    /&gt;Valor do ICMS DIFAL para UF de destino R$ 11,15&lt;br /&gt;</infCpl>
+            </infAdic>
+        </infNFe>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <SignedInfo>
+                <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                <Reference URI="#NFe35170527311437000100550010000000841487586418">
+                    <Transforms>
+                        <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                    </Transforms>
+                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                    <DigestValue>a/80irqrQTkNf0hQln7mrxwCQDw=</DigestValue>
+                </Reference>
+            </SignedInfo>
+            <SignatureValue>S7CySrriQhO3V3CraoD6UrsxSfqLF8b7Afzpz7YoCchv8Ik+LuMe7FRGEdrSEvdBCHyJ9sLw36Jr
+                84v/wpbAQSWYZuf4A25plJHBnR79tqZnV7lYLIl0UVhz/hCyT6Qs/U5TRZAP8VHS6tGQ1wNeXsLf
+                VqghBYTWRPyAgU+mCG1O2RdhAr/FqP2zR4RQtzVAyUV3KJHYMpMOaMYR/7gDX9jm5mNdRE1o5zm4
+                0eLr4VEc0LR3+oidKC7s0ogjSs935WfehpA03Ozel2jNptvpa/7PInoCaXU9NIMorKxI4U41iqoI
+                KiX0rjVQ54GI4udGisw/Is0KNKz09cyqI4nOZg==
+            </SignatureValue>
+            <KeyInfo>
+                <X509Data>
+                    <X509Certificate>MIIH8zCCBdugAwIBAgIIAYIzg3uxg1wwDQYJKoZIhvcNAQELBQAwdTELMAkGA1UEBhMCQlIxEzAR
+                        BgNVBAoTCklDUC1CcmFzaWwxNjA0BgNVBAsTLVNlY3JldGFyaWEgZGEgUmVjZWl0YSBGZWRlcmFs
+                        IGRvIEJyYXNpbCAtIFJGQjEZMBcGA1UEAxMQQUMgU0VSQVNBIFJGQiB2MjAeFw0xNzA0MTAwMDI3
+                        MDBaFw0xODA0MTAwMDI3MDBaMIHgMQswCQYDVQQGEwJCUjELMAkGA1UECBMCU1AxETAPBgNVBAcT
+                        CENBTVBJTkFTMRMwEQYDVQQKEwpJQ1AtQnJhc2lsMTYwNAYDVQQLEy1TZWNyZXRhcmlhIGRhIFJl
+                        Y2VpdGEgRmVkZXJhbCBkbyBCcmFzaWwgLSBSRkIxFjAUBgNVBAsTDVJGQiBlLUNOUEogQTExEjAQ
+                        BgNVBAsTCUFSIFNFUkFTQTE4MDYGA1UEAxMvRU5WSUEgUFJBIE1JTSBDT01FUkNJTyBFSVJFTEkg
+                        TUU6MjczMTE0MzcwMDAxMDAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCfN0YqBg1U
+                        6JFfOXvttsEd6ZCx3b9EUCq7O4Rjy52YDjbgWxVPSdLPHlxMuAzuictpfA2+PjlmYDhSRTPKlOtj
+                        6wS/PBOVLWtMF4kUckzfGrLXRM6eJk9wdvNXBrYlpt/W37AcHTAMZwGgHRQaElizkaUPx2UEnZnX
+                        sdrw2dFf+L2p8hTekY36HgYY/gXAfVEWVBHuGdOG7L2SFt+y5eColS1FMRjhPd/eiGeMPNjKede7
+                        /k3VxvVUCPsHm+YDvJXoyJ0C08NLwFGba8Ow2jNV/2isf64uuOHulFu7AJiya1IDJPgGo//uYKPo
+                        6gIJ18J/75B8tA39p9QmN2PuuXplAgMBAAGjggMZMIIDFTCBmQYIKwYBBQUHAQEEgYwwgYkwSAYI
+                        KwYBBQUHMAKGPGh0dHA6Ly93d3cuY2VydGlmaWNhZG9kaWdpdGFsLmNvbS5ici9jYWRlaWFzL3Nl
+                        cmFzYXJmYnYyLnA3YjA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AuY2VydGlmaWNhZG9kaWdpdGFs
+                        LmNvbS5ici9zZXJhc2FyZmJ2MjAJBgNVHRMEAjAAMB8GA1UdIwQYMBaAFLKgxD1GnnzIhWwIHhAy
+                        lGVGcEFzMHEGA1UdIARqMGgwZgYGYEwBAgENMFwwWgYIKwYBBQUHAgEWTmh0dHA6Ly9wdWJsaWNh
+                        Y2FvLmNlcnRpZmljYWRvZGlnaXRhbC5jb20uYnIvcmVwb3NpdG9yaW8vZHBjL2RlY2xhcmFjYW8t
+                        cmZiLnBkZjCB8wYDVR0fBIHrMIHoMEqgSKBGhkRodHRwOi8vd3d3LmNlcnRpZmljYWRvZGlnaXRh
+                        bC5jb20uYnIvcmVwb3NpdG9yaW8vbGNyL3NlcmFzYXJmYnYyLmNybDBEoEKgQIY+aHR0cDovL2xj
+                        ci5jZXJ0aWZpY2Fkb3MuY29tLmJyL3JlcG9zaXRvcmlvL2xjci9zZXJhc2FyZmJ2Mi5jcmwwVKBS
+                        oFCGTmh0dHA6Ly9yZXBvc2l0b3Jpby5pY3BicmFzaWwuZ292LmJyL2xjci9TZXJhc2EvcmVwb3Np
+                        dG9yaW8vbGNyL3NlcmFzYXJmYnYyLmNybDAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
+                        BQUHAwIGCCsGAQUFBwMEMIGyBgNVHREEgaowgaeBE0dMQVVDT0FPS0BHTUFJTC5DT02gIgYFYEwB
+                        AwKgGRMXR0xBVUNPIEJBUlJPU08gSlVOUVVFUkGgGQYFYEwBAwOgEBMOMjczMTE0MzcwMDAxMDCg
+                        OAYFYEwBAwSgLxMtMTQwNTE5ODczNzAzNDQxMTg2NzAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+                        oBcGBWBMAQMHoA4TDDAwMDAwMDAwMDAwMDANBgkqhkiG9w0BAQsFAAOCAgEAAwkpa9H+JhJAEMcj
+                        s3FbGnczC4eTh2bEgWppZFK9G3fOxHAYuZ/KM6PVbvi3meS895gzF8qI7BE3WJgs+f19h9R0N96R
+                        4Ys339tQjfVzlKHCJky4o7O4Zt5AJ3TDOoooeC045L0VHdi2P9pKNZIvJ1otE5VK/112U4cOsBvh
+                        VhQXYQ0ZuPJ7vtZEhtBzYn1aVOhTDBM0yZ8JRXTHSKRWNvOdwXZ4N3ZdFyA5SpsCGt8v9cX8ggDZ
+                        fq8ffOGdLyNj3n0ZN2Tqw+8pWCrkdbhg11yOGrK4ToENL0/6BMZlt9a9tFMVEBXVCSO/r16fC9i5
+                        0/QaRteaBAv2zaoWY/DnjjRRp9eg3a/gnbyJ7ONEODwP1KS+yrYyOwindJiOfuHLcYXLTA00apro
+                        +dADy5YWdb7GrOc7XCdRebTimlSOshE54cELt3xUgPPJ6aLtjspkiy+wC4iJyBNniciJSak6KL8U
+                        kimJTpYp6e2STBVK1Tdigxop43ACWFDYaZn3uCvlyt/1spU+MvRgx8HMt4s5UOKcSdAG9752lP+o
+                        UZvam+nj73ofd1g6o6yKBhfHYA5Rc/QGMLXVi7LnWUvHyE7kr4ZDSGBVbDTUjC//PhVn1uaeUmBl
+                        c6TvXVk8DLvMVLqkKS8v9RN1Nz1+YELVqMqyKOJO3JlDI6nFTdRPIDP2gG8=
+                    </X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </Signature>
+    </NFe>
+    <protNFe versao="3.10">
+        <infProt>
+            <tpAmb>1</tpAmb>
+            <verAplic>SP_NFE_PL_008i2</verAplic>
+            <chNFe>35170527311437000100550010000000841487586418</chNFe>
+            <dhRecbto>2017-05-03T07:16:16-03:00</dhRecbto>
+            <nProt>135170271808861</nProt>
+            <digVal>a/80irqrQTkNf0hQln7mrxwCQDw=</digVal>
+            <cStat>100</cStat>
+            <xMotivo>Autorizado o uso da NF-e</xMotivo>
+        </infProt>
+    </protNFe>
+</nfeProc>
