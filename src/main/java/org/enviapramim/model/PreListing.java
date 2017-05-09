@@ -17,4 +17,5 @@ public class PreListing {
     public String thumbnail;
     public String freeShipping;
     public String category;
+    public String profit;
 }

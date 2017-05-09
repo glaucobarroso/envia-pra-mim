@@ -12,6 +12,14 @@ public class PricingService {
         return String.format("%.2f", Float.parseFloat(cost) * MARGIN * CLASSIC_PERCENTAGE).replaceAll(",", ".");
     }
 
+    public String getSuggestedProfit(String cost) {
+        String price = getSuggestedPrice(cost);
+        float costF = Float.parseFloat(cost);
+        float priceF = Float.parseFloat(price);
+        float profitF = priceF - priceF*(CLASSIC_PERCENTAGE-1) - costF;
+        return String.format("%.2f", profitF).replaceAll(",", ".");
+    }
+
     public String getFreeShippingPrice(String category) {
         float shippingCost = 20.90f;
         return String.format("%.2f", shippingCost).replaceAll(",", ".");

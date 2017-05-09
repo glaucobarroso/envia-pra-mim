@@ -111,6 +111,7 @@ public class StorageService {
         preListingInfo.suggestedPrice = pricingService.getSuggestedPrice(productStorageModel.getCost());
         preListingInfo.freeShipping = pricingService.getFreeShippingPrice("NONE");
         preListingInfo.category = productStorageModel.getCategory();
+        preListingInfo.profit = pricingService.getSuggestedProfit(productStorageModel.getCost());
         return preListingInfo;
     }
 }

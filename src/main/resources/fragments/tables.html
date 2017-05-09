@@ -90,6 +90,7 @@
                         <th>Custo</th>
                         <th>Pre&ccedil;o sugerido</th>
                         <th>Pre&ccedil;o</th>
+                        <th>Lucro</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,7 +109,8 @@
                         <td style="padding-top:30px;"><label><input type="checkbox" class="freeshipping-cb" th:id="'freeshipping-' + ${product.sku} + '-' + ${iter.index}" th:onclick="'freeShipping(\'' + ${product.sku} + '\',\'' + ${product.freeShipping} + '\',\'' + ${iter.index} + '\');'"/> Frete gr&aacute;tis</label></td>
                         <td th:text="${product.cost}" th:id="'cost-' + ${product.sku} + '-' +  ${iter.index}" style="padding-top:30px;">COST</td>
                         <td th:text="${product.suggestedPrice}" th:id="'sprice-' + ${product.sku} + '-' + ${iter.index}" type="text" style="padding-top:30px;">SUG_PRICE</td>
-                        <td style="padding-top:20px;"><input th:id="'price-' + ${product.sku} + '-' +  ${iter.index}" type="text" class="form-control price" name="price"/></td>
+                        <td style="padding-top:20px;"><input th:value="${product.suggestedPrice}" th:id="'price-' + ${product.sku} + '-' +  ${iter.index}" type="text" class="form-control price" name="price" th:onKeyUp="'setProfit(\'' + ${product.sku} + '\',\'' + ${product.freeShipping} + '\',\'' + ${iter.index} + '\');'"/></td>
+                        <td th:text="${product.profit}" th:id="'profit-' + ${product.sku} + '-' +  ${iter.index}" style="padding-top:30px;"></td>
                     </tr>
                 </tbody>
             </table>

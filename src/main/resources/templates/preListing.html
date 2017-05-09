@@ -24,19 +24,34 @@
     var products = [[${products}]];
     var productsToList = [];
 
+    function filterFloat(value) {
+        if (/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
+          .test(value))
+          return Number(value);
+      return NaN;
+    }
+
     function freeShipping(sku, freeShippingStr, index) {
+        var type = getOfferType(sku, index);
+        setSugPrice(sku, freeShippingStr, index, type);
+        setProfit(sku, freeShippingStr, index);
+    }
+
+    function getOfferType(sku, index) {
         var name = "radio-" + sku + "-" + index;
         var inputId = "input[name='" + name + "']:checked";
         var type = $(inputId).val();
-        setSugPrice(sku, freeShippingStr, index, type);
+        return type;
     }
 
     function goldPro(sku, freeShippingStr, index) { // premium
         setSugPrice(sku, freeShippingStr, index, "gold_pro");
+        setProfit(sku, freeShippingStr, index);
     }
 
     function goldSpecial(sku, freeShippingStr, index) { // classico
         setSugPrice(sku, freeShippingStr, index, "gold_special");
+        setProfit(sku, freeShippingStr, index);
     }
 
     function setSugPrice(sku, freeShippingStr, index, type) {
@@ -44,10 +59,10 @@
         var isFreeShipping = $(freeShippingCheckBox).is(":checked");
         var costId = "#cost-" + sku + "-" + index;
         var costStr = $(costId).html();
-        var costF = parseFloat(costStr);
+        var costF = filterFloat(costStr);
         var suggestedPriceId = "#sprice-" + sku + "-" + index;
 
-        var freeShippingF = parseFloat(freeShippingStr);
+        var freeShippingF = filterFloat(freeShippingStr);
         var typeMult = 1;
         if(type == "gold_special") {
             typeMult = 1.11;
@@ -62,6 +77,45 @@
 
         sugPriceF = Number(sugPriceF.toFixed(2));
         $(suggestedPriceId).html(sugPriceF);
+    }
+
+    function setProfit(sku, freeShippingStr, index) {
+        var freeShippingCheckBox = "#freeshipping-" + sku + "-" + index;
+        var isFreeShipping = $(freeShippingCheckBox).is(":checked");
+        var costId = "#cost-" + sku + "-" + index;
+        var costStr = $(costId).html();
+        var costF = filterFloat(costStr);
+        var profitId = "#profit-" + sku + "-" + index;
+        var priceId = "#price-" + sku + "-" + index;
+        var priceStr = $(priceId).val();
+        if (priceStr) {
+            priceStr = priceStr.replace(",", ".");
+        } else {
+            $(profitId).html("-");
+            return;
+        }
+        var priceF = filterFloat(priceStr, 10);
+        if (isNaN(priceF)) {
+            $(profitId).html("-");
+            return;
+        }
+        var type = getOfferType(sku, index);
+
+        var freeShippingF = filterFloat(freeShippingStr);
+        var typeMult = 1;
+        if(type == "gold_special") {
+            typeMult = 1.11;
+        } else if (type == "gold_pro") {
+            typeMult = 1.16;
+        }
+        var shippingCostF = 0;
+        if (isFreeShipping) {
+            shippingCostF = freeShippingF;
+        }
+        var profitF = priceF - (shippingCostF + priceF*(typeMult - 1)) - costF;
+
+        profitF = Number(profitF.toFixed(2));
+        $(profitId).html(profitF);
     }
 
     function confirm() {
