@@ -277,19 +277,12 @@ public class MercadoLibreService {
             Response response = null;
             response = meli.put("/shipment_invoice/" + invoiceId, params, json);
             String body = response.getResponseBody();
-            int a = 1;
         } catch (MeliException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-        /*
-        curl -X PUT -H "Cot: application/json" -d '{
-        fiscal_key: {fiscalKey}
-    }'
-    https://api.mercadolibre.com/shipment_invoice/{id}?access_token={accessToken}&siteId={siteId}
-    }*/
 
     private String convertFiscalDataToInvoiceJson(FiscalData fiscalData) {
         InvoiceData invoiceData = new InvoiceData();

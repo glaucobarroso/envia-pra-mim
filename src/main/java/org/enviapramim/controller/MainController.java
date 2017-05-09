@@ -276,7 +276,7 @@ public class MainController {
     }
 
     @PostMapping("/fiscalDataUpload")
-    public String handleFileUpload(@RequestParam("fiscalxml") MultipartFile file) {
+    public String handleFileUpload(@RequestParam("fiscalxml") MultipartFile file, Model model) {
 
         try {
             ZipInputStream zipInputStream = new ZipInputStream(file.getInputStream());
@@ -291,7 +291,6 @@ public class MainController {
                 SecurityContextHolder.clearContext();
                 return "login";
             }
-//            mercadoLibreService.updateFiscalData(userMlData.getMlAccessToken(), "2764271", "35170527311437000100550010000001061546008038");
             MlUserInfo userInfo = mercadoLibreService.getUserInfo(userMlData.getMlAccessToken());
             OrdersInfo ordersInfo = mercadoLibreService.getOrders(userMlData.getMlAccessToken(), userInfo.id, null, "invoice_pending");
             if (ordersInfo.results != null) {
@@ -313,7 +312,8 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:/";
+        model.addAttribute("response", "Dados fiscais adicionados com SUCESSO!");
+        return "fiscalData";
     }
 
     private String findShipmentId(MercadoLibreService mercadoLibreService, OrdersInfo.Result result, FiscalData fiscalData) {
@@ -321,21 +321,20 @@ public class MainController {
         if (shipping_items != null && shipping_items.size() > 0) {
             // Currently all orders will have just one shippiment item
             OrdersInfo.Shipping_item shipping_item = shipping_items.get(0);
-            if(shipping_item.id != null) {
-                if (shipping_item.id.equalsIgnoreCase(fiscalData.productId)) {
-                    String cpf = mercadoLibreService.getBuyerCPFFromOrdersInfoResult(result);
-                    Integer quantity = shipping_item.quantity;
-                    if (cpf != null && quantity != null && quantity > 0) {
-                        if (cpf.equalsIgnoreCase(fiscalData.buyerCpf) && quantity == fiscalData.quantity.intValue()) {
+            if(shipping_item != null) {
+                // TODO handle the case where the same buyer made more than one order
+                String cpf = mercadoLibreService.getBuyerCPFFromOrdersInfoResult(result);
+                Integer quantity = shipping_item.quantity;
+                if (cpf != null && quantity != null && quantity > 0) {
+                    if (cpf.equalsIgnoreCase(fiscalData.buyerCpf) && quantity == fiscalData.quantity.intValue()) {
+                        return mercadoLibreService.getShippingIdFromOrdersInfoResult(result).toString();
+                    }
+                } else {
+                    // compare by name as CPF is null
+                    String fullName = mercadoLibreService.getBuyerFullNameFromOrdersInfoResult(result);
+                    if (fullName != null && quantity != null && quantity > 0) {
+                        if (fullName.equalsIgnoreCase(fiscalData.buyerName) && quantity == fiscalData.quantity.intValue()) {
                             return mercadoLibreService.getShippingIdFromOrdersInfoResult(result).toString();
-                        }
-                    } else {
-                        // compare by name as CPF is null
-                        String fullName = mercadoLibreService.getBuyerFullNameFromOrdersInfoResult(result);
-                        if (fullName != null && quantity != null && quantity > 0) {
-                            if (fullName.equalsIgnoreCase(fiscalData.buyerName) && quantity == fiscalData.quantity.intValue()) {
-                                return mercadoLibreService.getShippingIdFromOrdersInfoResult(result).toString();
-                            }
                         }
                     }
                 }
