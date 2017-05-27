@@ -215,12 +215,6 @@ public class MercadoLibreService {
         return listedItem;
     }
 
-    //pega a vendas de acordo a paginacao e filtro
-   // $anuncios = $meli->get('/orders/search/', array('seller'=>$dados_meli['idSeller'],'access_token' => $_SESSION['access_token'], 'sort' =>'date_desc','limit'=>$TotalPaginas,'offset'=>$PaginaAtual, 'order.status'=>$StatusInicial, 'shipping.status'=>$StatusEnvioInicial));
-
-    //numero total de vendas
-    // $anuncios_total = $meli->get('/orders/search/', array('order.status'=>$StatusInicial,'shipping.status'=>$StatusEnvioInicial));
-
     public OrdersInfo getOrders(String accessToken, Integer sellerId, String shippingStatus, String shippingSubStatus) {
         FluentStringsMap params = new FluentStringsMap();
         params.add("access_token", accessToken);
@@ -271,7 +265,6 @@ public class MercadoLibreService {
         String jsonFormat = "{\"fiscal_key\": \"%s\"}";
         String json = String.format(jsonFormat, nfeId);
         https:
-//api.mercadolibre.com/shipment_invoice/{id}?access_token={accessToken}&siteId={siteId}
         try {
             Gson gson = new Gson();
             Response response = null;
