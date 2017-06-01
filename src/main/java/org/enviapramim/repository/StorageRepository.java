@@ -28,28 +28,38 @@ public class StorageRepository {
         imageTransformer = new ImageTransformer();
     }
 
-    public ProductStorageModel storeProduct(Product product) {
+    public ProductStorageModel storeProduct(Product product, boolean isUpdate) {
         ProductStorageModel productStorageModel = convertToProductStorage(product);
 
-        // generating thumbnail for the main image
-        MultipartFile mainImage = product.getImages().get(0);
-        byte[] thumbnailBytes = imageTransformer.generateThumbnail(mainImage);
-        String thumbnailLink = storeImageBytes(thumbnailBytes, createImageName(mainImage.getOriginalFilename(),
-                product.getSku(), "thumb1"));
-        productStorageModel.setThumbNailLink(thumbnailLink);
+        List<MultipartFile> images = product.getImages();
+        if (images != null && images.size() > 0 && images.get(0).getOriginalFilename() != null &&
+                images.get(0).getOriginalFilename().length() > 0) {
+            // generating thumbnail for the main image
+            MultipartFile mainImage = images.get(0);
+            byte[] thumbnailBytes = imageTransformer.generateThumbnail(mainImage);
+            String thumbnailLink = storeImageBytes(thumbnailBytes, createImageName(mainImage.getOriginalFilename(),
+                    product.getSku(), "thumb1"));
+            productStorageModel.setThumbNailLink(thumbnailLink);
 
-        ArrayList<String> linksList = new ArrayList<String>();
-        for (int i = 0; i < product.getImages().size(); i++) {
-            String link = storeImage(product.getImages().get(i), product.getSku(), Integer.toString(i));
-            linksList.add(link);
+            ArrayList<String> linksList = new ArrayList<String>();
+            for (int i = 0; i < images.size(); i++) {
+                String link = storeImage(images.get(i), product.getSku(), Integer.toString(i));
+                linksList.add(link);
+            }
+            productStorageModel.setLinks(linksList);
         }
-        productStorageModel.setLinks(linksList);
         ProductStorageModel retProd = null;
-        try {
-            retProd = entityManager.insert(productStorageModel);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (isUpdate) {
             retProd = entityManager.update(productStorageModel);
+        } else {
+            try {
+                retProd = entityManager.insert(productStorageModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // SKU already exists, just update
+                retProd = entityManager.update(productStorageModel);
+            }
         }
         return retProd;
     }
@@ -59,12 +69,11 @@ public class StorageRepository {
     }
 
     public void updateProduct(Product product) {
-        ProductStorageModel productStorageModel = entityManager.load(ProductStorageModel.class, product.getSku());
-        productStorageModel.setTitle(product.getTitle());
-        productStorageModel.setCost(product.getCost());
-        productStorageModel.setDescription(product.getDescription());
-        productStorageModel.setQuantity(product.getQuantity());
-        entityManager.update(productStorageModel);
+        if (!product.getOldsku().equals(product.getSku())) {
+            // SKU changed, needs to delete and add a new product
+            deleteProduct(product.getOldsku());
+        }
+        storeProduct(product, true);
     }
 
     private String storeImage(MultipartFile image1, String sku, String number) {

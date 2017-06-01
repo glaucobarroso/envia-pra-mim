@@ -15,6 +15,7 @@ import java.util.List;
 public class Product {
 
     private String sku;
+    private String oldsku;
     private String title;
     private List<String> titles;
     private String description;
@@ -104,4 +105,13 @@ public class Product {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getOldsku() {
+        return oldsku;
+    }
+
+    public void setOldsku(String oldsku) {
+        this.oldsku = oldsku;
+    }
+
 }

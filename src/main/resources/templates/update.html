@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Alterar Produto</title>
+</head>
+<script th:inline="javascript">
+    var imagesIndex = 0;
+    var my_max_images = 6;
+
+    function addTitle() {
+        var index = $('#titles-wrap').children().length;
+        var newInput = '<input type="text" class="form-control" name="titles[' + index + ']" maxlength="60"/>';
+        $('#titles-wrap').append(newInput);
+    }
+
+    function removeTitle() {
+        if ($('#titles-wrap').children().length > 1) {
+            $('#titles-wrap').children().last().remove();
+        }
+    }
+
+    function addImage() {
+        if ((my_max_images - 1) > imagesIndex) {
+            imagesIndex++;
+            var newInput = '<input type="file" name="images[' + imagesIndex + ']"/>';
+            $('#images-wrap').append(newInput);
+        }
+    }
+
+    function removeImage() {
+        if (imagesIndex > 0) {
+            $('#images-wrap').children().last().remove();
+            imagesIndex--;
+        }
+    }
+
+    function updateImages() {
+        if ($('#showImages').is(':checked')) {
+            $('#images').css("visibility", "visible");
+        } else {
+            removeAllImages();
+            $('#images').css("visibility", "hidden");
+        }
+    }
+
+    function removeAllImages() {
+        var i;
+        for (i = imagesIndex; i > 0; i--) {
+            $('#images-wrap').children().last().remove();
+        }
+        imagesIndex = 0;
+    }
+
+    function update() {
+        var form = $("#updateForm");
+        var formData = new FormData(form[0]);
+        $("#loading-modal").modal('show');
+        $.ajax({
+            type : 'POST',
+            data: formData,
+            url : '/update',
+            cache:false,
+            contentType: false,
+            processData: false,
+            success : function(data){
+                $("#loading-modal").modal('hide');
+            }
+        });
+        return false;
+    };
+</script>
+<body>
+    <div th:include="../fragments/dialogs::loading"></div>
+    <div th:include="../fragments/common::header"></div>
+
+    <div th:if="${product} != null">
+
+        <div class="container">
+            <form id="updateForm" enctype="multipart/form-data" method="post">
+                <div class="row">
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                        <input type="hidden" class="form-control" name="oldsku" th:value="${product.sku}"/>
+                        <input th:each="link,iter : ${product.links}" type="hidden" class="form-control" th:name="'links[' + ${iter.index} +']'" maxlength="60" th:value="${link}"/>
+                        <input type="hidden" class="form-control" name="thumbnail" th:value="${product.thumbnail}"/>
+                        <label>SKU</label><br/>
+                        <input type="text" class="form-control" name="sku" th:value="${product.sku}"/>
+                        <label>T&iacute;tulo</label><br/>
+                        <input type="text" class="form-control" name="title" th:value="${product.title}"/>
+                        <label>Custo</label><br/>
+                        <input type="text" class="form-control" name="cost" th:value="${product.cost}"/>
+                        <label>Quantidade</label><br/>
+                        <input type="text" class="form-control" name="quantity" th:value="${product.quantity}"/>
+                        <label>Categoria</label>
+                        <select class="form-control" name="category" th:field="${product.category}">
+                            <option value="MLB202712">Mochila Camping Masculina</option>
+                            <option value="MLB202975">Mochila Escolar Meninas</option>
+                            <option value="MLB202976">Mochila Escolar Meninos</option>
+                            <option value="MLB202974">Mochila Escolar Masculina</option>
+                            <option value="MLB202885">Mochila Notebook Masculina</option>
+                        </select>
+                        <br/>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-2">
+                        <label>T&iacute;tulos Mercado Livre</label><br/>
+                        <div id="titles-wrap">
+                            <input th:each="title,iter : ${product.titles}" type="text" class="form-control" th:name="'titles[' + ${iter.index} +']'" maxlength="60" th:value="${title}"/>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="add-title" onclick="addTitle();">Adicionar T&iacute;tulo</button>
+                        <button type="button" class="btn btn-danger" id="remove-title" onclick="removeTitle();">Remover T&iacute;tulo</button>
+                    </div>
+
+                    <label><input id="showImages" type="checkbox" onclick="updateImages()"/>Alterar Imagens</label>
+                    <div id="images" class="col-sm-12 col-md-4 col-lg-4 col-xl-2" style="visibility: hidden;">
+                        <label>Imagens:</label><br/>
+                        <div id="images-wrap">
+                            <input type="file" name="images[0]"/>
+                        </div>
+                        <br/>
+                        <button type="button" class="btn btn-primary" id="add-image" onclick="addImage();">Adicionar Imagem</button>
+                        <button type="button" class="btn btn-danger" id="remove-image" onclick="removeImage();">Remover Imagem</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <label>Descri&ccedil;&atilde;o</label><br/>
+                        <textarea class="form-control" rows="5" name="description" th:inline="text">[[${product.description}]]</textarea>
+                        <br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                        <button class="btn btn-primary" id="update-btn" onclick="update();">Atualizar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <br/>
+                        <p th:text="${response}"></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div th:if="${product} == null">
+        N&atilde;o foi pos&iacute;vel alterar este produto.
+    </div>
+
+</body>
+</html>

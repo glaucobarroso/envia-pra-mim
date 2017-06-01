@@ -20,9 +20,11 @@ public class ProductValidator {
     protected static final String QUANTITY_VALIDATION_FAIL = " A quantidade deve ser um número inteiro.";
     protected static final String DESCRIPTION_VALIDATION_FAIL = " A descrição não pode ser vazia.";
     protected static final String EMPTY_MANDATORY_IMAGE_MSG = " A Imagem Principal não pode ser vazia.";
+    protected static final String EMPTY_IMAGE_UPDATE_MSG = " Você deve enviar novas imagens quando modifica o SKU.";
     protected static final String IMAGE_VALIDATION_FAIL_FORMAT_STR = " O arquivo da Imagem %s não é uma imagem válida.";
     protected static final String CATEGORY_VALIDATION_FAIL = " A categoria é inválida.";
-    protected static final String PRODUCT_VALIDATION_SUCCESS = "SUCCESS";
+    protected static final String PRODUCT_VALIDATION_FAIL = "ERRO";
+    protected static final String PRODUCT_VALIDATION_SUCCESS = "SUCESSO";
 
     protected static final int MANDATORY_IMAGE_VALIDATION_OK = 0;
     protected static final int EMPTY_MANDATORY_IMAGE = 1;
@@ -30,6 +32,9 @@ public class ProductValidator {
 
     public ValidationError validate(Product product) {
         String error = "";
+        if (product == null) {
+            return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
+        }
         if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
             error += SKU_VALIDATION_FAIL;
         }
@@ -57,29 +62,7 @@ public class ProductValidator {
         if (product.getDescription() == null) {
             error += DESCRIPTION_VALIDATION_FAIL;
         }
-        if (product.getImages() == null || product.getImages().size() == 0) {
-            error += EMPTY_MANDATORY_IMAGE_MSG;
-        } else {
-            boolean mandatoryImage = true;
-            for (MultipartFile image : product.getImages()) {
-                if (mandatoryImage) {
-                    int errorCode = validateMandatoryImage(image);
-                    switch (errorCode) {
-                        case INVALID_MANDATORY_IMAGE:
-                            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "Principal");
-                            break;
-                        case EMPTY_MANDATORY_IMAGE:
-                            error += EMPTY_MANDATORY_IMAGE_MSG;
-                            break;
-                    }
-                    mandatoryImage = false;
-                } else {
-                    if (!validateImage(image)) {
-                        error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "2");
-                    }
-                }
-            }
-        }
+        error += validateImageList(product.getImages(), EMPTY_MANDATORY_IMAGE_MSG);
 
         if(product.getCategory() == null || !validateCategory(product.getCategory())) {
             error += CATEGORY_VALIDATION_FAIL;
@@ -91,13 +74,31 @@ public class ProductValidator {
         return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
     }
 
-    public ValidationError validateSimpleUpdate(Product product) {
+    public ValidationError validateUpdate(Product product) {
         String error = "";
+        if (product == null) {
+            return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
+        }
+        if (product.getOldsku() == null || !product.getOldsku().matches("[A-Za-z0-9]+")) {
+            return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
+        }
         if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
             error += SKU_VALIDATION_FAIL;
         }
-        if (product.getTitle() == null) {
+        if (product.getTitles() == null) {
             error += TITLE_VALIDATION_FAIL;
+        } else {
+            List<String> titles = product.getTitles();
+            for (int i = 0; i < titles.size(); i++) {
+                if (titles.get(i) == null || titles.get(i).length() == 0) {
+                    titles.remove(i);
+                    i--;
+                }
+            }
+            product.setTitles(titles);
+            if (product.getTitles().size() == 0) {
+                error += TITLE_VALIDATION_FAIL;
+            }
         }
         if (product.getCost() == null || !validateCost(product)) {
             error += COST_VALIDATION_FAIL;
@@ -107,6 +108,15 @@ public class ProductValidator {
         }
         if (product.getDescription() == null) {
             error += DESCRIPTION_VALIDATION_FAIL;
+        }
+
+        if (product.getSku() != null && !product.getOldsku().equals(product.getSku())) {
+            error += validateImageList(product.getImages(), EMPTY_IMAGE_UPDATE_MSG);
+        } else if (!isImageListEmpty(product.getImages())) {
+            error += validateImageList(product.getImages(), EMPTY_IMAGE_UPDATE_MSG);
+        }
+        if(product.getCategory() == null || !validateCategory(product.getCategory())) {
+            error += CATEGORY_VALIDATION_FAIL;
         }
 
         if (error.length() != 0) {
@@ -138,12 +148,45 @@ public class ProductValidator {
         return true;
     }
 
+    protected String validateImageList(List<MultipartFile> images, String emptyListMessage) {
+        String error = "";
+        if (images == null || images.size() == 0) {
+            error += emptyListMessage;
+        } else {
+            boolean mandatoryImage = true;
+            for (MultipartFile image : images) {
+                if (mandatoryImage) {
+                    int errorCode = validateMandatoryImage(image);
+                    switch (errorCode) {
+                        case INVALID_MANDATORY_IMAGE:
+                            error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "Principal");
+                            break;
+                        case EMPTY_MANDATORY_IMAGE:
+                            error += EMPTY_MANDATORY_IMAGE_MSG;
+                            break;
+                    }
+                    mandatoryImage = false;
+                } else {
+                    if (!validateImage(image)) {
+                        error += String.format(IMAGE_VALIDATION_FAIL_FORMAT_STR, "2");
+                    }
+                }
+            }
+        }
+        return error;
+    }
+
     private boolean validateImage(MultipartFile file) {
         ImageValidator imageValidator = new ImageValidator();
         if (file == null || file.getOriginalFilename() == null || file.getOriginalFilename().length() == 0) {
             return true;
         }
         return imageValidator.validateImage(file);
+    }
+
+    private boolean isImageListEmpty(List<MultipartFile> images) {
+        String name = images.get(0).getOriginalFilename();
+        return !(images != null && images.get(0) != null && images.get(0).getOriginalFilename() != null && images.get(0).getOriginalFilename().length() > 0);
     }
 
     private int validateMandatoryImage(MultipartFile file) {

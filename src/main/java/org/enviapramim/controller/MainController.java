@@ -85,19 +85,33 @@ public class MainController {
         return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseEntity update(Product product) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    public String updateGet(@RequestParam("sku1") String sku, Model model) {
+        if (sku == null || !sku.matches("[A-Za-z0-9]+")) {
+            model.addAttribute("product", null);
+            return "update";
+        }
 
         StorageService storageService = new StorageService();
+        Product product = storageService.queryBySKU(sku);
+        model.addAttribute("product", product);
+
+        return "update";
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String updatePost(Product product, Model model) {
+        StorageService storageService = new StorageService();
         ProductValidator productValidator = new ProductValidator();
-        ValidationError validationError = productValidator.validateSimpleUpdate(product);
+        ValidationError validationError = productValidator.validateUpdate(product);
         if (validationError.getCode() == ValidationError.FAIL) {
-            return new ResponseEntity(validationError.getMessage(), httpHeaders, HttpStatus.BAD_REQUEST);
+            model.addAttribute("product", product);
+            model.addAttribute("response", validationError.getMessage());
+            return "update";
         }
         storageService.updateProduct(product);
-        return new ResponseEntity("SUCCESS", httpHeaders, HttpStatus.OK);
+        model.addAttribute("response", "Produto Alterado com sucesso!");
+        return "update";
     }
 
     @RequestMapping(value = "/loginml", method = RequestMethod.GET)

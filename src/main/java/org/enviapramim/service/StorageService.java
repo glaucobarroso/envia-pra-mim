@@ -22,7 +22,7 @@ public class StorageService {
         storageRepository = new StorageRepository();
     }
     public Product storeProduct(Product product) {
-        return convertToProduct(storageRepository.storeProduct(product));
+        return convertToProduct(storageRepository.storeProduct(product, false));
     }
 
     public List<Product> queryAllProducts() {
