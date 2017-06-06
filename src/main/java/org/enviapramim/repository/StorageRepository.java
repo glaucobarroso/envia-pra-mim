@@ -164,7 +164,7 @@ public class StorageRepository {
         productStorageModel.setCost(product.getCost());
         productStorageModel.setDescription(product.getDescription());
         productStorageModel.setTitle(product.getTitle());
-        productStorageModel.setTitles(product.getTitles());
+        productStorageModel.setTitles(product.getMlTitles());
         productStorageModel.setQuantity(product.getQuantity());
         productStorageModel.setCategory(product.getCategory());
         return productStorageModel;

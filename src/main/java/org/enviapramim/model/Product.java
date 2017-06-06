@@ -2,7 +2,6 @@ package org.enviapramim.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jmethods.catatumbo.Entity;
-import com.jmethods.catatumbo.Identifier;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class Product {
     private String sku;
     private String oldsku;
     private String title;
-    private List<String> titles;
+    private List<String> mlTitles;
     private String description;
     private String cost;
     private String quantity;
@@ -58,12 +57,12 @@ public class Product {
         this.cost = cost;
     }
 
-    public List<String> getTitles() {
-        return titles;
+    public List<String> getMlTitles() {
+        return mlTitles;
     }
 
-    public void setTitles(List<String> titles) {
-        this.titles = titles;
+    public void setMlTitles(List<String> titles) {
+        this.mlTitles = titles;
     }
 
     public String getTitle() {

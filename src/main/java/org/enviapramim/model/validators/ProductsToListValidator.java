@@ -1,10 +1,8 @@
 package org.enviapramim.model.validators;
 
 import org.enviapramim.Utils.ValidationError;
-import org.enviapramim.model.Product;
 import org.enviapramim.model.ProductToList;
 import org.enviapramim.model.ProductsToList;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by Glauco on 24/03/2017.
@@ -58,8 +56,8 @@ public class ProductsToListValidator extends ProductValidator {
     }
 
     private boolean validatePrice(ProductToList product) {
-        product.price = product.price.replaceAll(",", ".");
-        return validateFloat(product.price);
+        product.setPrice(product.getPrice().replaceAll(",", "."));
+        return validatePositiveFloat(product.price);
     }
 
     private boolean validateType(String type) {

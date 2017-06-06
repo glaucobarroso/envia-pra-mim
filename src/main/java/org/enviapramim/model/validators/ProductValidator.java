@@ -14,134 +14,131 @@ import java.util.List;
  */
 public class ProductValidator {
 
-    protected static final String SKU_VALIDATION_FAIL = " SKU incorreto, utilize somente caracteres alfanuméricos.";
-    protected static final String TITLE_VALIDATION_FAIL = " O Título não pode ser vazio.";
-    protected static final String COST_VALIDATION_FAIL = " O Custo deve ser um número.";
-    protected static final String QUANTITY_VALIDATION_FAIL = " A quantidade deve ser um número inteiro.";
-    protected static final String DESCRIPTION_VALIDATION_FAIL = " A descrição não pode ser vazia.";
-    protected static final String EMPTY_MANDATORY_IMAGE_MSG = " A Imagem Principal não pode ser vazia.";
-    protected static final String EMPTY_IMAGE_UPDATE_MSG = " Você deve enviar novas imagens quando modifica o SKU.";
-    protected static final String IMAGE_VALIDATION_FAIL_FORMAT_STR = " O arquivo da Imagem %s não é uma imagem válida.";
-    protected static final String CATEGORY_VALIDATION_FAIL = " A categoria é inválida.";
-    protected static final String PRODUCT_VALIDATION_FAIL = "ERRO";
-    protected static final String PRODUCT_VALIDATION_SUCCESS = "SUCESSO";
+    public static final String SKU_VALIDATION_FAIL = " SKU incorreto, utilize somente caracteres alfanuméricos.";
+    public static final String TITLE_VALIDATION_FAIL = " Títulos não podem ser vazios.";
+    public static final String TITLE_VALIDATION_FAIL_FORMAT_STR = " O Título %s é inválido.";
+    public static final String COST_VALIDATION_FAIL = " O Custo deve ser um número.";
+    public static final String QUANTITY_VALIDATION_FAIL = " A quantidade deve ser um número inteiro.";
+    public static final String DESCRIPTION_VALIDATION_FAIL = " A descrição não pode ser vazia.";
+    public static final String EMPTY_MANDATORY_IMAGE_MSG = " A Imagem Principal não pode ser vazia.";
+    public static final String EMPTY_IMAGE_UPDATE_MSG = " Você deve enviar novas imagens quando modifica o SKU.";
+    public static final String IMAGE_VALIDATION_FAIL_FORMAT_STR = " O arquivo da Imagem %s não é uma imagem válida.";
+    public static final String CATEGORY_VALIDATION_FAIL = " A categoria é inválida.";
+    public static final String PRODUCT_VALIDATION_FAIL = "ERRO";
+    public static final String PRODUCT_VALIDATION_SUCCESS = "SUCESSO";
 
-    protected static final int MANDATORY_IMAGE_VALIDATION_OK = 0;
-    protected static final int EMPTY_MANDATORY_IMAGE = 1;
-    protected static final int INVALID_MANDATORY_IMAGE = 2;
+    public static final int MANDATORY_IMAGE_VALIDATION_OK = 0;
+    public static final int EMPTY_MANDATORY_IMAGE = 1;
+    public static final int INVALID_MANDATORY_IMAGE = 2;
+
+    public static final int TITLE_MAX_SIZE = 60;
+    public static final int DESCRIPTION_MAX_SIZE = 1000;
 
     public ValidationError validate(Product product) {
-        String error = "";
+        StringBuilder error = new StringBuilder("");
         if (product == null) {
             return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
         }
-        if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
-            error += SKU_VALIDATION_FAIL;
+        if (product.getOldsku() != null && product.getOldsku().length() > 0) {
+            return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
         }
-        if (product.getTitles() == null) {
-            error += TITLE_VALIDATION_FAIL;
-        } else {
-            List<String> titles = product.getTitles();
-            for (int i = 0; i < titles.size(); i++) {
-                if (titles.get(i) == null || titles.get(i).length() == 0) {
-                    titles.remove(i);
-                    i--;
-                }
-            }
-            product.setTitles(titles);
-            if (product.getTitles().size() == 0) {
-                error += TITLE_VALIDATION_FAIL;
-            }
-        }
-        if (product.getCost() == null || !validateCost(product)) {
-            error += COST_VALIDATION_FAIL;
-        }
-        if (product.getQuantity() == null || !validateQuantity(product.getQuantity())) {
-            error += QUANTITY_VALIDATION_FAIL;
-        }
-        if (product.getDescription() == null) {
-            error += DESCRIPTION_VALIDATION_FAIL;
-        }
-        error += validateImageList(product.getImages(), EMPTY_MANDATORY_IMAGE_MSG);
 
-        if(product.getCategory() == null || !validateCategory(product.getCategory())) {
-            error += CATEGORY_VALIDATION_FAIL;
-        }
+        error.append(validateCommonFields(product));
+        error.append(validateImageList(product.getImages(), EMPTY_MANDATORY_IMAGE_MSG));
 
         if (error.length() != 0) {
-            return new ValidationError(error, ValidationError.FAIL);
+            return new ValidationError(error.toString(), ValidationError.FAIL);
         }
         return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
     }
 
     public ValidationError validateUpdate(Product product) {
-        String error = "";
+        StringBuilder error = new StringBuilder("");
         if (product == null) {
             return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
         }
         if (product.getOldsku() == null || !product.getOldsku().matches("[A-Za-z0-9]+")) {
             return new ValidationError(PRODUCT_VALIDATION_FAIL, ValidationError.FAIL);
         }
-        if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
-            error += SKU_VALIDATION_FAIL;
-        }
-        if (product.getTitles() == null) {
-            error += TITLE_VALIDATION_FAIL;
-        } else {
-            List<String> titles = product.getTitles();
-            for (int i = 0; i < titles.size(); i++) {
-                if (titles.get(i) == null || titles.get(i).length() == 0) {
-                    titles.remove(i);
-                    i--;
-                }
-            }
-            product.setTitles(titles);
-            if (product.getTitles().size() == 0) {
-                error += TITLE_VALIDATION_FAIL;
-            }
-        }
-        if (product.getCost() == null || !validateCost(product)) {
-            error += COST_VALIDATION_FAIL;
-        }
-        if (product.getQuantity() == null || !validateQuantity(product.getQuantity())) {
-            error += QUANTITY_VALIDATION_FAIL;
-        }
-        if (product.getDescription() == null) {
-            error += DESCRIPTION_VALIDATION_FAIL;
-        }
 
-        if (product.getSku() != null && !product.getOldsku().equals(product.getSku())) {
-            error += validateImageList(product.getImages(), EMPTY_IMAGE_UPDATE_MSG);
+        error.append(validateCommonFields(product));
+
+        if (product.getSku() != null && !product.getSku().equals(product.getOldsku())) {
+            // if SKU changed new images must be uploaded
+            error.append(validateImageList(product.getImages(), EMPTY_IMAGE_UPDATE_MSG));
         } else if (!isImageListEmpty(product.getImages())) {
-            error += validateImageList(product.getImages(), EMPTY_IMAGE_UPDATE_MSG);
+            // if SKU did not change, but images list is not empty new images must be validated
+            error.append(validateImageList(product.getImages(), EMPTY_IMAGE_UPDATE_MSG));
         }
         if(product.getCategory() == null || !validateCategory(product.getCategory())) {
-            error += CATEGORY_VALIDATION_FAIL;
+            error.append(CATEGORY_VALIDATION_FAIL);
         }
 
         if (error.length() != 0) {
-            return new ValidationError(error, ValidationError.FAIL);
+            return new ValidationError(error.toString(), ValidationError.FAIL);
         }
         return new ValidationError(PRODUCT_VALIDATION_SUCCESS, ValidationError.SUCCESS);
     }
 
-    protected boolean validateCost(Product product) {
-        product.setCost(product.getCost().replaceAll(",", "."));
-        return validateFloat(product.getCost());
+    private String validateCommonFields(Product product) {
+        StringBuilder error = new StringBuilder("");
+        if (product.getSku() == null || !product.getSku().matches("[A-Za-z0-9]+")) {
+            error.append(SKU_VALIDATION_FAIL);
+        }
+        if (!validateTitle(product.getTitle())) {
+            error.append(String.format(TITLE_VALIDATION_FAIL_FORMAT_STR, product.getTitle()));
+        }
+        if (product.getMlTitles() == null) {
+            error.append(TITLE_VALIDATION_FAIL);
+        } else {
+            error.append(validateTitleList(product.getMlTitles()));
+        }
+        if (product.getCost() == null || !validateCost(product)) {
+            error.append(COST_VALIDATION_FAIL);
+        }
+        if (product.getQuantity() == null || !validateQuantity(product.getQuantity())) {
+            error.append(QUANTITY_VALIDATION_FAIL);
+        }
+        if (product.getDescription() == null || !validateDescription(product.getDescription())) {
+            error.append(DESCRIPTION_VALIDATION_FAIL);
+        }
+        if(product.getCategory() == null || !validateCategory(product.getCategory())) {
+            error.append(CATEGORY_VALIDATION_FAIL);
+        }
+        return error.toString();
     }
 
-    protected boolean validateFloat(String number) {
-        try {
-            Float.parseFloat(number);
-        } catch (Exception e) {
-            return false;
+    protected boolean validateCost(Product product) {
+        product.setCost(product.getCost().replaceAll(",", "."));
+        return validatePositiveFloat(product.getCost());
+    }
+
+    protected boolean validatePositiveFloat(String number) {
+        Float numberF = parseFloat(number);
+        if (numberF != null) {
+            if (numberF >= 0) {
+                return true;
+            }
         }
-        return true;
+        return false;
+    }
+
+    protected Float parseFloat(String number) {
+        Float ret = null;
+        try {
+            ret = Float.parseFloat(number);
+        } catch (Exception e) {
+            return ret;
+        }
+        return ret;
     }
 
     protected boolean validateQuantity(String quantity) {
         try {
-            Integer.parseInt(quantity);
+            Integer ret = Integer.parseInt(quantity);
+            if (ret < 0) {
+                return false;
+            }
         } catch (Exception e) {
             return false;
         }
@@ -210,12 +207,45 @@ public class ProductValidator {
         categories.add(MercadoLibreService.CATEGORY_BACKPACK_CAMPING_MALE);
         categories.add(MercadoLibreService.CATEGORY_BAG_LEATHER_FEMALE);
         categories.add(MercadoLibreService.CATEGORY_TRAVEL_BAG_SET);
+        return categories.contains(category);
+    }
 
-        for (String cat : categories) {
-            if (cat.equals(category)) {
-                return true;
+    private String validateTitleList(List<String> titles) {
+        String ret = "";
+        for (int i = 0; i < titles.size(); i++) {
+            if (titles.get(i) == null || titles.get(i).length() == 0) {
+                titles.remove(i);
+                i--;
+            } else {
+                if (!validateTitle(titles.get(i))) {
+                    ret += String.format(TITLE_VALIDATION_FAIL_FORMAT_STR, titles.get(i));
+                    break;
+                }
             }
         }
-        return false;
+        if (titles.size() == 0) {
+            ret += TITLE_VALIDATION_FAIL;
+        }
+        return ret;
+    }
+
+    private boolean validateTitle(String title) {
+        if (title == null) {
+            return false;
+        }
+        if (title.length() > TITLE_MAX_SIZE) {
+            return false;
+        }
+        return title.matches("^(?U)[\\p{Alpha}\\-' [0-9]]+");
+    }
+
+    private boolean validateDescription(String description) {
+        if (description == null) {
+            return false;
+        }
+        if (description.length() > DESCRIPTION_MAX_SIZE) {
+            return false;
+        }
+        return true;
     }
 }
