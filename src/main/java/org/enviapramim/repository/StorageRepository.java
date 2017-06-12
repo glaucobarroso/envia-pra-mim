@@ -17,15 +17,24 @@ import java.util.List;
  */
 public class StorageRepository {
 
-    private static final String BUCKET_NAME = "envia-pra-mim.appspot.com";
+    public static final String BUCKET_NAME = "envia-pra-mim.appspot.com";
+    public static final String STORAGE_DOMAIN = "https://storage.googleapis.com/";
 
     EntityManager entityManager;
     private ImageTransformer imageTransformer;
+    private Storage storage;
 
     public StorageRepository() {
         EntityManagerFactory emf = EntityManagerFactory.getInstance();
         entityManager = emf.createDefaultEntityManager();
         imageTransformer = new ImageTransformer();
+        storage = StorageOptions.getDefaultInstance().getService();
+    }
+
+    public StorageRepository(EntityManager entityManager, ImageTransformer imageTransformer, Storage storage) {
+        this.entityManager = entityManager;
+        this.imageTransformer = imageTransformer;
+        this.storage = storage;
     }
 
     public ProductStorageModel storeProduct(Product product, boolean isUpdate) {
@@ -76,9 +85,8 @@ public class StorageRepository {
         storeProduct(product, true);
     }
 
-    private String storeImage(MultipartFile image1, String sku, String number) {
+    public String storeImage(MultipartFile image1, String sku, String number) {
         try {
-            Storage storage = StorageOptions.getDefaultInstance().getService();
             String fileExt = imageTransformer.getImageExt(image1.getOriginalFilename());
             String contentType = "image/" + fileExt;
             List<Acl> acls = new ArrayList<>();
@@ -86,7 +94,7 @@ public class StorageRepository {
             Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, createImageName(image1.getOriginalFilename(),
                                 sku, number)).setAcl(acls).setContentType(contentType).build(),
                                 image1.getInputStream());
-            return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + sku + number + "." + fileExt;
+            return STORAGE_DOMAIN + BUCKET_NAME + "/" + sku + number + "." + fileExt;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -95,12 +103,11 @@ public class StorageRepository {
         return null;
     }
 
-    private String storeImageBytes(byte[] image, String imageName) {
-        Storage storage = StorageOptions.getDefaultInstance().getService();
+    public String storeImageBytes(byte[] image, String imageName) {
         List<Acl> acls = new ArrayList<>();
         acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
         Blob blob = storage.create(BlobInfo.newBuilder(BUCKET_NAME, imageName).setAcl(acls).build(), image);
-        return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + imageName;
+        return STORAGE_DOMAIN + BUCKET_NAME + "/" + imageName;
     }
 
     private String createImageName(String originalName, String sku, String number) {
@@ -151,7 +158,7 @@ public class StorageRepository {
     }
 
     public void deleteAllListedItems() {
-        long a = entityManager.deleteAll(ListedItem.class);
+        entityManager.deleteAll(ListedItem.class);
     }
 
     public void addListedItems(List<ListedItem> listedItems) {

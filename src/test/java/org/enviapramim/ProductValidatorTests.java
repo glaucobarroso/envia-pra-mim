@@ -3,18 +3,12 @@ package org.enviapramim;
 import org.enviapramim.Utils.ValidationError;
 import org.enviapramim.model.Product;
 import org.enviapramim.model.validators.ProductValidator;
-import org.enviapramim.service.MercadoLibreService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +19,14 @@ import java.util.List;
 public class ProductValidatorTests {
 
     ProductValidator productValidator;
+    TestUtils testUtils;
+    Product product;
 
     @Before
     public void setUp() {
         productValidator = new ProductValidator();
+        testUtils = new TestUtils();
+        product = testUtils.createValidProduct();
     }
 
     @Test
@@ -73,20 +71,21 @@ public class ProductValidatorTests {
                 .contains(ProductValidator.TITLE_VALIDATION_FAIL));
         errorMsg = removeSubstring(errorMsg, ProductValidator.TITLE_VALIDATION_FAIL);
 
+        Assert.assertTrue("Wrong ERROR MESSAGE - missing title fail message", errorMsg
+                .contains(String.format(ProductValidator.TITLE_VALIDATION_FAIL_FORMAT_STR, null)));
+        errorMsg = removeSubstring(errorMsg, String.format(ProductValidator.TITLE_VALIDATION_FAIL_FORMAT_STR, null));
+
         Assert.assertTrue("Wrong ERROR Message - message = " + validationError.getMessage(), errorMsg.length() == 0);
     }
 
     @Test
     public void testValidProduct() throws Exception {
-        Product product = createValidProduct();
-        ValidationError validationError = productValidator.validate(product);
         assertValidationError(productValidator.validate(product), ValidationError.SUCCESS,
                 ProductValidator.PRODUCT_VALIDATION_SUCCESS);
     }
 
     @Test
     public void testWrongSKU() throws Exception {
-        Product product = createValidProduct();
         product.setSku("$5aaaa!");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.SKU_VALIDATION_FAIL);
@@ -94,7 +93,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongCategory() throws Exception {
-        Product product = createValidProduct();
         product.setCategory("WRONG");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.CATEGORY_VALIDATION_FAIL);
@@ -102,7 +100,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testEmptyImage() throws Exception {
-        Product product = createValidProduct();
         List<MultipartFile> images = new ArrayList<MultipartFile>();
         images.add(null);
         product.setImages(images);
@@ -112,9 +109,8 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongImage1() throws Exception {
-        Product product = createValidProduct();
         List<MultipartFile> images = new ArrayList<MultipartFile>();
-        images.add(createMockMultipartFile("src/test/resources/text.txt", "text", "text.txt", "text/plain"));
+        images.add(testUtils.createMockMultipartFile("src/test/resources/text.txt", "text", "text.txt", "text/plain"));
         product.setImages(images);
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 String.format(ProductValidator.IMAGE_VALIDATION_FAIL_FORMAT_STR, "Principal"));
@@ -122,18 +118,16 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongImage2() throws Exception {
-        Product product = createValidProduct();
         List<MultipartFile> images = new ArrayList<MultipartFile>();
-        images.add(createMockMultipartFile("src/test/resources/image.png", "image", "image.png", "image/png"));
-        images.add(createMockMultipartFile("src/test/resources/text.txt", "text", "text.txt", "text/plain"));
+        images.add(testUtils.createMockMultipartFile("src/test/resources/image.png", "image", "image.png", "image/png"));
+        images.add(testUtils.createMockMultipartFile("src/test/resources/text.txt", "text", "text.txt", "text/plain"));
         product.setImages(images);
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 String.format(ProductValidator.IMAGE_VALIDATION_FAIL_FORMAT_STR, "2"));
     }
 
     @Test
-    public void testValidCostWithComma() throws Exception {
-        Product product = createValidProduct();
+    public void testValidCost() throws Exception {
         product.setCost("1,99");
         assertValidationError(productValidator.validate(product), ValidationError.SUCCESS,
                 ProductValidator.PRODUCT_VALIDATION_SUCCESS);
@@ -141,7 +135,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongCost1() throws Exception {
-        Product product = createValidProduct();
         product.setCost("-1");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.COST_VALIDATION_FAIL);
@@ -149,7 +142,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongCost2() throws Exception {
-        Product product = createValidProduct();
         product.setCost("aaaaa");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.COST_VALIDATION_FAIL);
@@ -157,7 +149,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongDescription() throws Exception {
-        Product product = createValidProduct();
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < ProductValidator.DESCRIPTION_MAX_SIZE + 1; i++) {
             builder.append("a");
@@ -169,7 +160,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongQuantity1() throws Exception {
-        Product product = createValidProduct();
         product.setQuantity("-1");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.QUANTITY_VALIDATION_FAIL);
@@ -177,7 +167,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongQuantity2() throws Exception {
-        Product product = createValidProduct();
         product.setQuantity("1.11");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.QUANTITY_VALIDATION_FAIL);
@@ -185,7 +174,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongQuantity3() throws Exception {
-        Product product = createValidProduct();
         product.setQuantity("aaaa");
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
                 ProductValidator.QUANTITY_VALIDATION_FAIL);
@@ -193,7 +181,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongTitle1() throws Exception {
-        Product product = createValidProduct();
         String title = "aaaaa bbbb $#";
         product.setTitle(title);
         assertValidationError(productValidator.validate(product), ValidationError.FAIL,
@@ -202,7 +189,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongTitle2() throws Exception {
-        Product product = createValidProduct();
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < ProductValidator.TITLE_MAX_SIZE + 1; i++) {
             builder.append("a");
@@ -215,7 +201,6 @@ public class ProductValidatorTests {
 
     @Test
     public void testWrongMlTitles1() throws Exception {
-        Product product = createValidProduct();
         List<String> titles = new ArrayList<String>();
         titles.add(null);
         product.setMlTitles(titles);
@@ -224,19 +209,35 @@ public class ProductValidatorTests {
     }
 
     @Test
-    public void testMisc() throws Exception {
-        Product product = new Product();
+    public void testWrongMlTitles2() throws Exception {
         List<String> titles = new ArrayList<String>();
-        String[] test = {"Jean-Marie Le'Blanc\n", "Żółć", "Ὀδυσσεύς", null, "原田雅彦", ""};
-        String description = "Jean-Marie Le'Blanc" + "Żółć" + "Ὀδυσσεύς\t.:\r;!?" + "原田雅彦" + "";
-        for (String str : test) {
-            titles.add(str);
-        }
         product.setMlTitles(titles);
-        ProductValidator productValidator = new ProductValidator();
-        //boolean error = productValidator.validateDescription(description);
-        List<String> newTitles = product.getMlTitles();
+        assertValidationError(productValidator.validate(product), ValidationError.FAIL,
+                ProductValidator.TITLE_VALIDATION_FAIL);
+    }
 
+    @Test
+    public void testWrongMlTitles3() throws Exception {
+        List<String> titles = new ArrayList<String>();
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < ProductValidator.TITLE_MAX_SIZE + 1; i++) {
+            builder.append("a");
+        }
+        titles.add(builder.toString());
+        product.setMlTitles(titles);
+        String title = builder.toString();
+        assertValidationError(productValidator.validate(product), ValidationError.FAIL,
+                String.format(ProductValidator.TITLE_VALIDATION_FAIL_FORMAT_STR, title));
+    }
+
+    @Test
+    public void testWrongMlTitles4() throws Exception {
+        List<String> titles = new ArrayList<String>();
+        String title = "ff%fvf";
+        titles.add(title);
+        product.setMlTitles(titles);
+        assertValidationError(productValidator.validate(product), ValidationError.FAIL,
+                String.format(ProductValidator.TITLE_VALIDATION_FAIL_FORMAT_STR, title));
     }
 
     private void assertValidationError(ValidationError validationError, int expectedErrorCode, String expectedErrorMsg) {
@@ -246,44 +247,6 @@ public class ProductValidatorTests {
                 validationError.getCode());
         Assert.assertEquals("Wrong ERROR MESSAGE - errorMessage = " + validationError.getMessage(),
                 validationError.getMessage(), expectedErrorMsg);
-    }
-
-    public MultipartFile createValidMultipartFile() {
-        return null;
-    }
-
-    public MultipartFile createInvalidMultipartFile() {
-        return null;
-    }
-
-    private Product createValidProduct() {
-        Product product = new Product();
-        product.setSku("AAA09390");
-        product.setCost("11,90");
-        product.setQuantity("10");
-        product.setDescription("Esta é uma descrição\ndlkfdlkfd \tdlsklfdkdfk \rldsçlsdksç");
-        product.setTitle("Título do produto");
-        product.setCategory(MercadoLibreService.CATEGORY_BACKPACK_CAMPING_MALE);
-        List<String> titles = new ArrayList<String>();
-        titles.add("dodfsfpó fddê lsdlkfsd - ");
-        titles.add("aaaaaaaa");
-        product.setMlTitles(titles);
-        List<MultipartFile> files = new ArrayList<MultipartFile>();
-        files.add(createMockMultipartFile("src/test/resources/image.png", "image", "image.png", "image/png"));
-        files.add(createMockMultipartFile("src/test/resources/guarani.jpg", "guarani", "guarani.jpg", "image/jpg"));
-        product.setImages(files);
-        return product;
-    }
-
-    public MultipartFile createMockMultipartFile(String pathStr, String name, String originalName, String type) {
-
-        try {
-            Path path = Paths.get(pathStr);
-            return new MockMultipartFile(name, originalName, type, Files.readAllBytes(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     String removeSubstring(String string, String toRemove) {
