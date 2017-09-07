@@ -24,8 +24,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().regexMatchers("*").permitAll()
-                //.antMatchers("/", "/queryProduct", "/update/*", "/update").permitAll()
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -41,32 +41,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        // TODO remove hardcoded password and create user / password storage
         InMemoryUserDetailsManagerConfigurer inMemoryAuth = auth.inMemoryAuthentication();
-        inMemoryAuth.withUser("larissa").password("lafrit193").roles("USER");
-        inMemoryAuth.withUser("glauco").password("ab3496zz").roles("USER");
-        inMemoryAuth.withUser("pai").password("af96101").roles("USER");
+        inMemoryAuth.withUser("larissa").password("12345").roles("USER");
+        inMemoryAuth.withUser("glauco").password("12345").roles("USER");
+        inMemoryAuth.withUser("pai").password("12345").roles("USER");
     }
 
-    /*
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(new AuthenticationProvider() {
-            @Override
-            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                // Do you database query here
-                ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_"));  // list of roles from database
-                return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
-                        authentication.getCredentials(), authorities);
-            }
-
-            @Override
-            public boolean supports(Class<?> authentication) {
-                return true;
-            }
-        })
-    }*/
 }
